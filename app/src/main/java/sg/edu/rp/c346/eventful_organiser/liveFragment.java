@@ -4,10 +4,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.google.firebase.database.FirebaseDatabase;
 
 
 /**
@@ -61,17 +65,21 @@ public class liveFragment extends Fragment {
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View x = inflater.inflate(R.layout.fragment_live, null);
-
-        button = (Button)x.findViewById(R.id.)
-
-
-
-    }
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        // Inflate the layout for this fragment
+//        View x = inflater.inflate(R.layout.fragment_live, null);
+//        mDatabase = FirebaseDatabase.getInstance().getReference().child("Pharmacies");
+//        mBlogList =(RecyclerView)view.findViewById(R.id.pharmacy_list);
+//        mBlogList.setHasFixedSize(true);
+//        mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+//        getActivity().setTitle("Pharmacies");
+//
+//        return view;
+//
+//
+//    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

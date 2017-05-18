@@ -26,7 +26,7 @@ public class Upload_Event extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload__event);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Events");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
 
         etTitle = (EditText)findViewById(R.id.titleH);
         etDesc = (EditText)findViewById(R.id.descH);
@@ -43,7 +43,7 @@ public class Upload_Event extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Add Tips");
+        getSupportActionBar().setTitle("Create an Event");
 
         Progress = new ProgressDialog(this);
     }
@@ -52,8 +52,8 @@ public class Upload_Event extends AppCompatActivity {
         Progress.setMessage("Uploading");
         Progress.show();
 
-        final String title_val = etTitle.getText().toString().trim();
-        final String desc_val = etDesc.getText().toString().trim();
+        String title_val = etTitle.getText().toString().trim();
+        String desc_val = etDesc.getText().toString().trim();
         DatabaseReference mPost = mDatabase.push();
 
         mPost.child("title").setValue(title_val);
@@ -65,10 +65,10 @@ public class Upload_Event extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add:
-                startActivity( new Intent(getActivity(), Upload_Fitness.class));
-                break;
+            case android.R.id.home:
+                finish();
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 }
