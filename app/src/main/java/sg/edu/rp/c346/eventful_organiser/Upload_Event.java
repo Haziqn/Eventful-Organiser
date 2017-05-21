@@ -104,10 +104,11 @@ public class Upload_Event extends AppCompatActivity {
         mPost.child("date").setValue(date_val);
         mPost.child("time").setValue(time_val);
         mPost.child("description").setValue(desc_val);
-        mPost.child("head chief").setValue(headChief_val);
+        mPost.child("head_chief").setValue(headChief_val);
         mPost.child("organiser").setValue(organiser_val);
         mPost.child("pax").setValue(pax_val);
         mPost.child("title").setValue(title_val);
+        mPost.child("status").setValue("active");
 
         StorageReference filepath = Storage.child("Event_Image").child(uri.getLastPathSegment());
 

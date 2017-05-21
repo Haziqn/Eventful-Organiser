@@ -132,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="00:00"
+                android:hint="DD/MM/YYYY"
                 android:inputType="date"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp" />
@@ -153,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="DD/MM/YYYY"
+                android:hint="00:00"
                 android:inputType="time"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp" />
