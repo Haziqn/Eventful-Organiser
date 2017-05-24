@@ -3,6 +3,7 @@ package sg.edu.rp.c346.eventful_organiser;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,7 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -100,8 +103,26 @@ public class Upload_Event extends AppCompatActivity {
         String pax_val = etPax.getText().toString().trim();
         final DatabaseReference mPost = mDatabase.push();
 
-        mPost.child("address").setValue(address_val);
-        mPost.child("date").setValue(date_val);
+        mPost.child("address").setValue(address_val).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Upload_Event.this, "address successfully added", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(Upload_Event.this, "failed to add address" + task.getException(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        mPost.child("date").setValue(date_val).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Upload_Event.this, "date successfully added", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(Upload_Event.this, "failed to add date" + task.getException(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         mPost.child("time").setValue(time_val);
         mPost.child("description").setValue(desc_val);
         mPost.child("head_chief").setValue(headChief_val);
@@ -118,6 +139,8 @@ public class Upload_Event extends AppCompatActivity {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 Toast.makeText(Upload_Event.this, downloadUrl.toString(), Toast.LENGTH_LONG).show();
                 mPost.child("image").setValue(downloadUrl.toString());
+                finish();
+
             }
         });
 
