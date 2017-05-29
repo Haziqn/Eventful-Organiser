@@ -26,14 +26,21 @@
             android:padding="15dp"
             android:textSize="16dp"
             android:textStyle="bold" />
+
         <TextView
+            android:id="@+id/post_Desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/post_Desc"
-            android:text="Post description goes here"
+            android:paddingBottom="15dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:paddingBottom="15dp" />
+            android:text="Post description goes here" />
+
+        <TextView
+            android:id="@+id/post_TS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Post timestamp goes here" />
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

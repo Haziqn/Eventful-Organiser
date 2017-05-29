@@ -24,6 +24,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Upload_Event extends AppCompatActivity {
 
     EditText etTitle;
@@ -106,26 +109,8 @@ public class Upload_Event extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && !TextUtils.isEmpty(organiser_val) && !TextUtils.isEmpty(date_val) && !TextUtils.isEmpty(time_val) && !TextUtils.isEmpty(headChief_val) && !TextUtils.isEmpty(address_val) && !TextUtils.isEmpty(pax_val) && uri != null) {
 
-            mPost.child("address").setValue(address_val).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(Upload_Event.this, "address successfully added", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(Upload_Event.this, "failed to add address" + task.getException(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-            mPost.child("date").setValue(date_val).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(Upload_Event.this, "date successfully added", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(Upload_Event.this, "failed to add date" + task.getException(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
+            mPost.child("address").setValue(address_val);
+            mPost.child("date").setValue(date_val);
             mPost.child("time").setValue(time_val);
             mPost.child("description").setValue(desc_val);
             mPost.child("head_chief").setValue(headChief_val);
@@ -133,6 +118,7 @@ public class Upload_Event extends AppCompatActivity {
             mPost.child("pax").setValue(pax_val);
             mPost.child("title").setValue(title_val);
             mPost.child("status").setValue("active");
+            mPost.child("timeStamp").setValue(getCurrentTimeStamp().toString().trim());
 
             StorageReference filepath = Storage.child("Event_Image").child(uri.getLastPathSegment());
 
@@ -140,7 +126,6 @@ public class Upload_Event extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    Toast.makeText(Upload_Event.this, downloadUrl.toString(), Toast.LENGTH_LONG).show();
                     mPost.child("image").setValue(downloadUrl.toString());
                     finish();
 
@@ -173,6 +158,20 @@ public class Upload_Event extends AppCompatActivity {
             uri = data.getData();
 
             imageButton.setImageURI(uri);
+        }
+    }
+
+    public static String getCurrentTimeStamp(){
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+
+            return currentDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
         }
     }
 }

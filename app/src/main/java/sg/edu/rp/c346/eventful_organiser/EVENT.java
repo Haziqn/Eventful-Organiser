@@ -16,12 +16,13 @@ public class EVENT {
     private String organiser;
     private String pax;
     private String status;
+    private String timeStamp;
 
     public EVENT() {
 
     }
 
-    public EVENT(String title, String description, String image, String address, String date, String time, String head_chief, String organiser, String pax, String status) {
+    public EVENT(String title, String description, String image, String address, String date, String time, String head_chief, String organiser, String pax, String status, String timeStamp) {
         this.title = title;
         this.description = description;
         this.image = image;
@@ -32,6 +33,7 @@ public class EVENT {
         this.organiser = organiser;
         this.pax = pax;
         this.status = status;
+        this.timeStamp = timeStamp;
     }
 
     public String getTitle() {
@@ -112,5 +114,13 @@ public class EVENT {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }
