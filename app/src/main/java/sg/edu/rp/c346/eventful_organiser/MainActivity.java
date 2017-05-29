@@ -19,7 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity
-       implements NavigationView.OnNavigationItemSelectedListener, Home.OnFragmentInteractionListener, pastFragment.OnFragmentInteractionListener, liveFragment.OnFragmentInteractionListener, draftFragment.OnFragmentInteractionListener {
+       implements NavigationView.OnNavigationItemSelectedListener, Home.OnFragmentInteractionListener, pastFragment.OnFragmentInteractionListener, liveFragment.OnFragmentInteractionListener{
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
