@@ -17,16 +17,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity
        implements NavigationView.OnNavigationItemSelectedListener, Home.OnFragmentInteractionListener, pastFragment.OnFragmentInteractionListener, liveFragment.OnFragmentInteractionListener{
 
+    FirebaseAuth mAuth;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
+
+            mAuth = FirebaseAuth.getInstance();
 
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
@@ -45,6 +53,17 @@ public class MainActivity extends AppCompatActivity
 
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
+
+            View header = navigationView.getHeaderView(0);
+            TextView textViewUsername = (TextView) header.findViewById(R.id.tvDisplayUser);
+            TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
+            ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDp);
+            final FirebaseUser user = mAuth.getCurrentUser();
+            String email = user.getEmail().toString();
+            String username = user.getDisplayName().toString();
+
+            textViewUserEmail.setText(email);
+            textViewUsername.setText(username);
 
             //replace the activity_main with Home(fragment) layout
             Home home = new Home();
@@ -100,7 +119,10 @@ public class MainActivity extends AppCompatActivity
                 myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Log out user from application and intent back to login page.
+                        FirebaseAuth.getInstance().signOut();
+                        Intent i = new Intent(MainActivity.this, SignIn.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
 
                     }
                 });

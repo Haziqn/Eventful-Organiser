@@ -62,7 +62,7 @@ public class Upload_Event extends AppCompatActivity {
         etDate = (EditText)findViewById(R.id.dateH);
         etTime = (EditText)findViewById(R.id.timeH);
         etAddress = (EditText)findViewById(R.id.addressH);
-        etPax = (EditText)findViewById(R.id.paxH);
+        etPax = (EditText)findViewById(R.id.etPaxH);
 
         btnSubmit = (Button)findViewById(R.id.submitbutton);
 

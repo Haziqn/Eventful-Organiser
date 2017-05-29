@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/cardview_shadow_end_color"
-    android:elevation="2dp"
+    android:background="@drawable/side_nav_bar"
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingBottom="16dp"
@@ -14,26 +13,23 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/ivUserDp"
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         app:srcCompat="@android:drawable/sym_def_app_icon" />
 
     <TextView
-        android:id="@+id/tvDisplayUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:text="Android Studio"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/cardview_dark_background" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/tvDisplayEmail"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="android.studio@android.com"
-        android:textColor="@color/cardview_dark_background" />
+        android:text="android.studio@android.com" />
 
 </LinearLayout>

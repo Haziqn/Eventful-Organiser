@@ -8,7 +8,7 @@ public class EVENT {
 
     private String title;
     private String description;
-        private String image;
+    private String image;
     private String address;
     private String date;
     private String time;

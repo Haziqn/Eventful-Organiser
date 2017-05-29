@@ -170,7 +170,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/paxH"
+                android:id="@+id/etPaxH"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -37,10 +40,13 @@ public class SignUp extends AppCompatActivity {
     Button buttonSignUp, buttonSignIn;
     ImageButton imageButton;
 
+    String TAG = "SignUp.java";
+
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     StorageReference Storage;
     private Uri uri = null;
+    public String downloadUrl = "";
     final int GALLERY_REQUEST = 1;
     ProgressDialog mProgress;
 
@@ -112,9 +118,9 @@ public class SignUp extends AppCompatActivity {
                 !TextUtils.isEmpty(address) &&
                 !TextUtils.isEmpty(description) &&
                 !TextUtils.isEmpty(password) &&
-                !TextUtils.isEmpty(password2)
-                && password.equalsIgnoreCase(password2)
-                && uri != null) {
+                !TextUtils.isEmpty(password2) &&
+                password.equalsIgnoreCase(password2) &&
+                uri != null) {
 
             mProgress.setMessage("Signing up ...");
             mProgress.show();
@@ -146,16 +152,6 @@ public class SignUp extends AppCompatActivity {
                             Toast.makeText(SignUp.this, "AES encryption error", Toast.LENGTH_LONG).show();
                         }
 
-//                         // Decode the encoded data with AES
-//                         byte[] decodedBytes = null;
-//                         try {
-//                             Cipher c = Cipher.getInstance("AES");
-//                             c.init(Cipher.DECRYPT_MODE, sks);
-//                             decodedBytes = c.doFinal(encodedBytes);
-//                         } catch (Exception e) {
-//                             Toast.makeText(SignUp.this, "AES decryption error", Toast.LENGTH_LONG).show();
-//                         }
-//                         tvdecoded.setText("[DECODED]:\n" + new String(decodedBytes) + "\n");
 
                         String user_id = mAuth.getCurrentUser().getUid();
                         final DatabaseReference current_user_db = mDatabase.child(user_id);
@@ -174,14 +170,34 @@ public class SignUp extends AppCompatActivity {
                         filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                Toast.makeText(SignUp.this, downloadUrl.toString(), Toast.LENGTH_LONG).show();
-                                current_user_db.child("image").setValue(downloadUrl.toString());
+                                downloadUrl = taskSnapshot.getDownloadUrl().toString();
+                                current_user_db.child("image").setValue(downloadUrl);
                                 finish();
 
                             }
                         });
 
+                        final FirebaseUser user = mAuth.getCurrentUser();
+                        user.sendEmailVerification();
+
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(name + "")
+                                .setPhotoUri(Uri.parse(downloadUrl))
+                                .build();
+
+                        user.updateProfile(profileUpdates)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "User profile updated.");
+                                            Log.d("User name", user.getDisplayName());
+                                            Log.d("User photo", user.getPhotoUrl().toString());
+                                        } else {
+                                            Log.e("ERROR", task.getException().toString());
+                                        }
+                                    }
+                                });
                         mProgress.dismiss();
 
                         Intent intent = new Intent(SignUp.this, MainActivity.class);
