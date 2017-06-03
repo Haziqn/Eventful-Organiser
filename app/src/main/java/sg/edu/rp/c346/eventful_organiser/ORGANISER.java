@@ -12,6 +12,10 @@ public class ORGANISER {
     String status;
     String user_name;
 
+    public ORGANISER() {
+
+    }
+
     public ORGANISER(String email, String image, String password, String status, String user_name) {
         this.email = email;
         this.image = image;

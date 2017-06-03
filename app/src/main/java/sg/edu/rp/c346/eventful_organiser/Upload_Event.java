@@ -45,6 +45,7 @@ public class Upload_Event extends AppCompatActivity {
     StorageReference Storage;
     private Uri uri = null;
     final int GALLERY_REQUEST = 1;
+    String user_id = "";
 
     ProgressDialog Progress;
 
@@ -56,6 +57,7 @@ public class Upload_Event extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
         Storage = FirebaseStorage.getInstance().getReference();
+        user_id = mAuth.getCurrentUser().getUid();
 
         imageButton = (ImageButton) findViewById(R.id.imageButtonUser);
         etTitle = (EditText)findViewById(R.id.titleH);
@@ -114,7 +116,8 @@ public class Upload_Event extends AppCompatActivity {
             mPost.child("time").setValue(time_val);
             mPost.child("description").setValue(desc_val);
             mPost.child("head_chief").setValue(headChief_val);
-            mPost.child("organiser").setValue(organiser_val);
+            mPost.child("organiser_name").setValue(organiser_val);
+            mPost.child("organiser").setValue(user_id);
             mPost.child("pax").setValue(pax_val);
             mPost.child("title").setValue(title_val);
             mPost.child("status").setValue("active");

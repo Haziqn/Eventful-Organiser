@@ -25,7 +25,8 @@
         <activity android:name=".Upload_Event" />
         <activity android:name=".SignIn" />
         <activity android:name=".ViewEventDetails" />
-        <activity android:name=".UserAccount"></activity>
+        <activity android:name=".UserAccount" />
+        <activity android:name=".UpdateEvent"></activity>
     </application>
 
 </manifest>

@@ -72,28 +72,28 @@ public class UserAccount extends AppCompatActivity {
 
         DatabaseReference mDatabaseRef = mDatabase.child(uid);
 
-//        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                ORGANISER organiser = dataSnapshot.getValue(ORGANISER.class);
-//                String email = organiser.getEmail().toString().trim();
-//                String username = organiser.getUser_name().toString().trim();
-//                SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-//                String password = prefs.getString("password", "");
-////                String image = participant.getImage().toString().trim();
-//
-//                editEmail.setText(email);
-//                editName.setText(username);
-//                editPassword.setText(password);
-////                Picasso.with(UserAccount.this).load(image).into(imageButton);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ORGANISER organiser = dataSnapshot.getValue(ORGANISER.class);
+                String email = organiser.getEmail().toString().trim();
+                String username = organiser.getUser_name().toString().trim();
+                SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+                String password = prefs.getString("password", "");
+//                String image = participant.getImage().toString().trim();
+
+                editEmail.setText(email);
+                editName.setText(username);
+                editPassword.setText(password);
+//                Picasso.with(UserAccount.this).load(image).into(imageButton);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override

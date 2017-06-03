@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,11 +15,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class ViewEventDetails extends AppCompatActivity {
 
     TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief;
     ImageView imageView;
+    Button btnUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +35,12 @@ public class ViewEventDetails extends AppCompatActivity {
         tvHeadChief = (TextView)findViewById(R.id.tvHeadChief);
         imageView = (ImageView)findViewById(R.id.imageView2);
         tvAddress = (TextView)findViewById(R.id.tvAddress);
+        btnUpdate = (Button)findViewById(R.id.btnUpdate);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
 
         Intent i = getIntent();
-        String itemKey = i.getStringExtra("key");
+        final String itemKey = i.getStringExtra("key");
 
         DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -52,13 +57,15 @@ public class ViewEventDetails extends AppCompatActivity {
                 String date = event.getDate().toString().trim();
                 String time = event.getTime().toString().trim();
                 String timestamp = event.getTimeStamp().toString().trim();
+                String organiser_name = event.getOrganiser_name().toString().trim();
 
                 tvDate.setText("Date: " + date);
                 tvTime.setText("Time: " + time);
                 tvDesc.setText(description);
-                tvOrganiser.setText("Organiser: " + organiser);
+                tvOrganiser.setText("Organiser: " + organiser_name);
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
                 tvAddress.setText("Location: " + "\n" + address);
+                Picasso.with(getBaseContext()).load(image).into(imageView);
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -71,6 +78,15 @@ public class ViewEventDetails extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewEventDetails.this, UpdateEvent.class);
+                intent.putExtra("updateKey", itemKey);
+                startActivity(intent);
             }
         });
     }
