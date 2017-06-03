@@ -2,6 +2,7 @@ package sg.edu.rp.c346.eventful_organiser;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,6 +46,7 @@ public class liveFragment extends Fragment {
     private RecyclerView mBlogList;
     private DatabaseReference mDatabase;
     FirebaseRecyclerAdapter firebaseRecyclerAdapter;
+    String itemKey;
 
     public liveFragment() {
         // Required empty public constructor
@@ -123,7 +125,13 @@ public class liveFragment extends Fragment {
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        firebaseRecyclerAdapter.getRef(position);
+                        Intent i = new Intent(getContext(), ViewEventDetails.class);
+                        itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
+                        i.putExtra("key", itemKey);
+
+
+                        startActivity(i);
+
 
                     }
                 });

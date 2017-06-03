@@ -60,10 +60,8 @@ public class MainActivity extends AppCompatActivity
             ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDp);
             final FirebaseUser user = mAuth.getCurrentUser();
             String email = user.getEmail().toString();
-//            String username = user.getDisplayName().toString();
 
             textViewUserEmail.setText(email);
-//            textViewUsername.setText(username);
 
             //replace the activity_main with Home(fragment) layout
             Home home = new Home();
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity
 
             if (id == R.id.nav_editprofile) {
                 // Handle the camera action
-                Intent i = new Intent(MainActivity.this, editProfileActivity.class);
+                Intent i = new Intent(MainActivity.this, UserAccount.class);
                 startActivity(i);
             } else if (id == R.id.nav_logout) {
                 AlertDialog.Builder myBuilder = new AlertDialog.Builder(MainActivity.this);

@@ -2,11 +2,13 @@ package sg.edu.rp.c346.eventful_organiser;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,11 +28,16 @@ public class SignIn extends AppCompatActivity {
     ProgressDialog progressDialog;
     DatabaseReference databaseReference;
     FirebaseAuth mAuth;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setTitle("Eventful - Sign In");
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
         mAuth = FirebaseAuth.getInstance();
@@ -65,6 +72,10 @@ public class SignIn extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
 
+                        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                        editor.putString("password", password);
+                        editor.commit();
+
                         progressDialog.dismiss();
                         Intent intent = new Intent(SignIn.this, MainActivity.class);
                         startActivity(intent);
@@ -76,4 +87,15 @@ public class SignIn extends AppCompatActivity {
             });
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
