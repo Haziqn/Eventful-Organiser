@@ -140,6 +140,10 @@ public class liveFragment extends Fragment {
         };
 
         mBlogList.setAdapter(firebaseRecyclerAdapter);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setReverseLayout(true);
+        mBlogList.setLayoutManager(mLayoutManager);
+
     }
     public static class BlogViewHolder extends RecyclerView.ViewHolder {
 
