@@ -2,18 +2,34 @@ package sg.edu.rp.c346.eventful_organiser;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -24,8 +40,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class Upload_Event extends AppCompatActivity {
 
@@ -47,12 +65,40 @@ public class Upload_Event extends AppCompatActivity {
     final int GALLERY_REQUEST = 1;
     String user_id = "";
 
+    private GoogleMap map;
+
+    List<Address> addressList = null;
+
     ProgressDialog Progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload__event);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+
+                int permissionCheck = ContextCompat.checkSelfPermission(Upload_Event.this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+                // Add a marker in Sydney and move the camera
+                LatLng singapore = new LatLng(1.3553794, 103.8677444);
+                map.addMarker(new MarkerOptions().position(singapore).title("Singapore"));
+                map.moveCamera(CameraUpdateFactory.newLatLng(singapore));
+                if (ActivityCompat.checkSelfPermission(Upload_Event.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Upload_Event.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                map.setMyLocationEnabled(true);
+
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
@@ -95,6 +141,26 @@ public class Upload_Event extends AppCompatActivity {
         Progress = new ProgressDialog(this);
     }
 
+    public void onMapSearch(View view) {
+        EditText locationSearch = (EditText) findViewById(R.id.addressH);
+        String location = locationSearch.getText().toString();
+
+
+        if (location != null || !location.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Address address = addressList.get(0);
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+        }
+    }
+
     private void startPosting() {
         Progress.setMessage("Uploading");
         Progress.show();
@@ -108,6 +174,7 @@ public class Upload_Event extends AppCompatActivity {
         String address_val = etAddress.getText().toString().trim();
         String pax_val = etPax.getText().toString().trim();
         final DatabaseReference mPost = mDatabase.push();
+        Address address = addressList.get(0);
 
         if (!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && !TextUtils.isEmpty(organiser_val) && !TextUtils.isEmpty(date_val) && !TextUtils.isEmpty(time_val) && !TextUtils.isEmpty(headChief_val) && !TextUtils.isEmpty(address_val) && !TextUtils.isEmpty(pax_val) && uri != null) {
 
@@ -122,6 +189,8 @@ public class Upload_Event extends AppCompatActivity {
             mPost.child("title").setValue(title_val);
             mPost.child("status").setValue("active");
             mPost.child("timeStamp").setValue(getCurrentTimeStamp().toString().trim());
+            mPost.child("longitude").setValue(address.getLongitude());
+            mPost.child("latitude").setValue(address.getLatitude());
 
             StorageReference filepath = Storage.child("Event_Image").child(uri.getLastPathSegment());
 
