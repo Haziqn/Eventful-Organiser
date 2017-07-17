@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -51,12 +52,14 @@ public class Upload_Event extends AppCompatActivity {
     EditText etDesc;
     EditText etOrganiser;
     EditText etHeadChief;
-    EditText etDate;
-    EditText etTime;
+//    EditText etDate;
+//    EditText etTime;
     EditText etAddress;
     EditText etPax;
     Button btnSubmit;
     ImageButton imageButton;
+    DatePicker datePicker;
+    TimePicker timePicker;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
@@ -64,6 +67,10 @@ public class Upload_Event extends AppCompatActivity {
     private Uri uri = null;
     final int GALLERY_REQUEST = 1;
     String user_id = "";
+
+    int year = 0;
+    int monthOfYear = 0;
+    int dayOfMonth = 0;
 
     private GoogleMap map;
 
@@ -110,10 +117,12 @@ public class Upload_Event extends AppCompatActivity {
         etDesc = (EditText)findViewById(R.id.descH);
         etOrganiser = (EditText)findViewById(R.id.organiserH);
         etHeadChief = (EditText)findViewById(R.id.headChiefH);
-        etDate = (EditText)findViewById(R.id.dateH);
-        etTime = (EditText)findViewById(R.id.timeH);
+//        etDate = (EditText)findViewById(R.id.dateH);
+//        etTime = (EditText)findViewById(R.id.timeH);
         etAddress = (EditText)findViewById(R.id.addressH);
         etPax = (EditText)findViewById(R.id.etPaxH);
+        datePicker = (DatePicker) findViewById(R.id.datePicker);
+        timePicker = (TimePicker) findViewById(R.id.timePicker);
 
         btnSubmit = (Button)findViewById(R.id.submitbutton);
 
@@ -168,19 +177,30 @@ public class Upload_Event extends AppCompatActivity {
         String title_val = etTitle.getText().toString().trim();
         String desc_val = etDesc.getText().toString().trim();
         String organiser_val = etOrganiser.getText().toString().trim();
-        String date_val = etDate.getText().toString().trim();
-        String time_val = etTime.getText().toString().trim();
+//        String date_val = etDate.getText().toString().trim();
+//        String time_val = etTime.getText().toString().trim();
         String headChief_val = etHeadChief.getText().toString().trim();
         String address_val = etAddress.getText().toString().trim();
         String pax_val = etPax.getText().toString().trim();
         final DatabaseReference mPost = mDatabase.push();
         Address address = addressList.get(0);
 
-        if (!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && !TextUtils.isEmpty(organiser_val) && !TextUtils.isEmpty(date_val) && !TextUtils.isEmpty(time_val) && !TextUtils.isEmpty(headChief_val) && !TextUtils.isEmpty(address_val) && !TextUtils.isEmpty(pax_val) && uri != null) {
+        int hour = timePicker.getCurrentHour(); //24hr
+        int min = timePicker.getCurrentMinute();
+
+        String time = String.valueOf(hour) + ":" + String.valueOf(min);
+
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth() + 1;
+        int year = datePicker.getYear();
+
+        String date = String.valueOf(day) + "/" + String.valueOf(month) + "/" + String.valueOf(year);
+
+        if (!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && !TextUtils.isEmpty(organiser_val) && !TextUtils.isEmpty(headChief_val) && !TextUtils.isEmpty(address_val) && !TextUtils.isEmpty(pax_val) && uri != null) {
 
             mPost.child("address").setValue(address_val);
-            mPost.child("date").setValue(date_val);
-            mPost.child("time").setValue(time_val);
+            mPost.child("date").setValue(date);
+            mPost.child("time").setValue(time);
             mPost.child("description").setValue(desc_val);
             mPost.child("head_chief").setValue(headChief_val);
             mPost.child("organiser_name").setValue(organiser_val);
