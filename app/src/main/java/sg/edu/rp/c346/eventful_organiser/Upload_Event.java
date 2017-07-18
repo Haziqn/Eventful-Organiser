@@ -35,11 +35,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -63,6 +67,7 @@ public class Upload_Event extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
+    DatabaseReference mDatabaseOrganiser;
     StorageReference Storage;
     private Uri uri = null;
     final int GALLERY_REQUEST = 1;
@@ -109,6 +114,7 @@ public class Upload_Event extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
+        mDatabaseOrganiser = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
         Storage = FirebaseStorage.getInstance().getReference();
         user_id = mAuth.getCurrentUser().getUid();
 
@@ -123,6 +129,8 @@ public class Upload_Event extends AppCompatActivity {
         etPax = (EditText)findViewById(R.id.etPaxH);
         datePicker = (DatePicker) findViewById(R.id.datePicker);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
+
+
 
         btnSubmit = (Button)findViewById(R.id.submitbutton);
 

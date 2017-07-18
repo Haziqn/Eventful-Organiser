@@ -142,6 +142,7 @@ public class liveFragment extends Fragment {
         mBlogList.setAdapter(firebaseRecyclerAdapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
         mBlogList.setLayoutManager(mLayoutManager);
 
     }
