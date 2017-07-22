@@ -41,7 +41,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/titleH"
+                android:id="@+id/etTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageSelect"
@@ -66,7 +66,7 @@
                 android:id="@+id/descH"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/titleH"
+                android:layout_below="@+id/etTitle"
                 android:ems="10"
                 android:inputType="textMultiLine"
                 android:paddingLeft="16dp"

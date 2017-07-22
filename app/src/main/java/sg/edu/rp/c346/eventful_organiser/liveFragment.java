@@ -17,88 +17,65 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import static sg.edu.rp.c346.eventful_organiser.R.layout.fragment_live;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link liveFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link liveFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class liveFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
     private RecyclerView mBlogList;
     private DatabaseReference mDatabase;
+    private Query mQuery;
+    private FirebaseAuth firebaseAuth;
     FirebaseRecyclerAdapter firebaseRecyclerAdapter;
     String itemKey;
+    String organiser_name;
 
     public liveFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment All.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static liveFragment newInstance(String param1, String param2) {
-        liveFragment fragment = new liveFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
     @Override
     public void onStart() {
         super.onStart();
-
-
 
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<EVENT, BlogViewHolder>(
 
                 EVENT.class,
                 R.layout.row,
                 BlogViewHolder.class,
-                mDatabase
+                mQuery
         ) {
             @Override
             protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, final int position) {
 
+                String uid = model.getOrganiser();
+
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
+                databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        organiser_name = dataSnapshot.child("user_name").getValue().toString();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 viewHolder.setTitle(model.getTitle());
-                viewHolder.setDesc(model.getDescription());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-                viewHolder.setTimeStamp(model.getTimeStamp());
+                viewHolder.setLocation(model.getLocation());
+                viewHolder.setOrganiser(organiser_name);
+                viewHolder.setPax(model.getPax());
 
                 viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -129,9 +106,7 @@ public class liveFragment extends Fragment {
                         itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
                         i.putExtra("key", itemKey);
 
-
                         startActivity(i);
-
 
                     }
                 });
@@ -156,33 +131,42 @@ public class liveFragment extends Fragment {
         }
 
         public void setTitle(String title) {
-            TextView postTitle = (TextView)mView.findViewById(R.id.post_Title);
+            TextView postTitle = (TextView)mView.findViewById(R.id.eventTitle);
             postTitle.setText(title);
         }
 
-        public void setDesc(String desc) {
-            TextView post_desc = (TextView)mView.findViewById(R.id.post_Desc);
-            post_desc.setText(desc);
-        }
-
         public void setImage(Context ctx, String image) {
-            ImageView post_Image = (ImageView)mView.findViewById(R.id.post_Image);
+            ImageView post_Image = (ImageView)mView.findViewById(R.id.ivEvent);
             Picasso.with(ctx).load(image).into(post_Image);
         }
 
-        public void setTimeStamp(String timeStamp) {
-            TextView post_ts = (TextView)mView.findViewById(R.id.post_TS);
-            post_ts.setText(timeStamp);
+        public void setLocation(String location) {
+            TextView locations = (TextView)mView.findViewById(R.id.eventAddress);
+            locations.setText(location);
         }
 
+        public void setOrganiser(String organiser) {
+            TextView organisers = (TextView)mView.findViewById(R.id.eventOrganiser);
+            organisers.setText(organiser);
+        }
+
+
+        public void setPax(String pax) {
+            TextView paxes = (TextView)mView.findViewById(R.id.eventTickets);
+            paxes.setText(pax);
+        }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(fragment_live,
                 container, false);
+        firebaseAuth = FirebaseAuth.getInstance();
+        String uid = firebaseAuth.getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
+        mQuery = mDatabase.orderByChild("organiser").equalTo(uid);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
@@ -191,30 +175,6 @@ public class liveFragment extends Fragment {
         mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
 
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     /**
@@ -227,6 +187,7 @@ public class liveFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

@@ -2,24 +2,17 @@ package sg.edu.rp.c346.eventful_organiser;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,8 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import org.w3c.dom.Text;
 
 public class UpdateEvent extends AppCompatActivity {
 
@@ -61,7 +52,7 @@ public class UpdateEvent extends AppCompatActivity {
         Storage = FirebaseStorage.getInstance().getReference();
 
         imageButton = (ImageButton) findViewById(R.id.imageButtonUser);
-        etTitle = (EditText)findViewById(R.id.titleH);
+        etTitle = (EditText)findViewById(R.id.etTitle);
         etDesc = (EditText)findViewById(R.id.descH);
         etOrganiser = (EditText)findViewById(R.id.organiserH);
         etHeadChief = (EditText)findViewById(R.id.headChiefH);
@@ -80,26 +71,26 @@ public class UpdateEvent extends AppCompatActivity {
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                EVENT event = dataSnapshot.getValue(EVENT.class);
-                String title = event.getTitle().toString().trim();
-                String description = event.getDescription().toString().trim();
-                String image = event.getImage().toString().trim();
-                String address = event.getAddress().toString().trim();
-                String head_chief = event.getHead_chief().toString().trim();
-                String pax = event.getPax().toString().trim();
-                String organiser = event.getOrganiser_name().toString().trim();
-                String date = event.getDate().toString().trim();
-                String time = event.getTime().toString().trim();
-                String timestamp = event.getTimeStamp().toString().trim();
-
-                etDate.setText(date);
-                etTime.setText(time);
-                etDesc.setText(description);
-                etOrganiser.setText(organiser);
-                etHeadChief.setText(head_chief);
-                etAddress.setText(address);
-                etTitle.setText(title);
-                etPax.setText(pax);
+//                EVENT event = dataSnapshot.getValue(EVENT.class);
+//                String title = event.getTitle().toString().trim();
+//                String description = event.getDescription().toString().trim();
+//                String image = event.getImage().toString().trim();
+//                String address = event.getAddress().toString().trim();
+//                String head_chief = event.getHead_chief().toString().trim();
+//                String pax = event.getPax().toString().trim();
+//                String organiser = event.getOrganiser_name().toString().trim();
+//                String date = event.getDate().toString().trim();
+//                String time = event.getTime().toString().trim();
+//                String timestamp = event.getTimeStamp().toString().trim();
+//
+//                etDate.setText(date);
+//                etTime.setText(time);
+//                etDesc.setText(description);
+//                etOrganiser.setText(organiser);
+//                etHeadChief.setText(head_chief);
+//                etAddress.setText(address);
+//                etTitle.setText(title);
+//                etPax.setText(pax);
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="type_array">
+        <item>Soccer</item>
+        <item>Photography</item>
+        <item>Programming</item>
+        <item>Singing</item>
+        <item>ML</item>
+    </string-array>
+</resources>

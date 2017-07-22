@@ -13,19 +13,19 @@
     android:paddingTop="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/ivUserDp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ivUserDP"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:paddingTop="16dp"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
+        android:src="@drawable/f3" />
 
     <TextView
         android:id="@+id/tvDisplayUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
-        android:text="Signed in as:"
+        android:text="Welcome,"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/cardview_dark_background" />
 
@@ -35,5 +35,6 @@
         android:layout_height="wrap_content"
         android:text="android.studio@android.com"
         android:textColor="@color/cardview_dark_background" />
+
 
 </LinearLayout>

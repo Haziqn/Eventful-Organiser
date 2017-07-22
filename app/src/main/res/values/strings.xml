@@ -7,6 +7,7 @@
     <string name="btnSignIn">Already have an account? Sign in here</string>
     <string name="btnSkip">Skip</string>
     <string name="btnLogin">Login</string>
+    <string name="welcome">Welcome Eventful</string>
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->

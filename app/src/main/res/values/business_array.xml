@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="business_array">
+        <item>Books &amp; Magazines</item>
+        <item>Brands &amp; Products</item>
+        <item>Event Sources</item>
+        <item>Other</item>
+        <item>People</item>
+        <item>Sports</item>
+        <item>Website &amp; Blogs</item>
+    </string-array>
+</resources>

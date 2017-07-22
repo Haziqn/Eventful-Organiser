@@ -1,25 +1,30 @@
 package sg.edu.rp.c346.eventful_organiser;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.util.Calendar;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -27,14 +32,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,27 +47,21 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Upload_Event extends AppCompatActivity {
 
-    EditText etTitle;
-    EditText etDesc;
-    EditText etOrganiser;
-    EditText etHeadChief;
-//    EditText etDate;
-//    EditText etTime;
-    EditText etAddress;
-    EditText etPax;
+    EditText editTextTitle, editTextDesc, editTextPax, editTextHeadChief, editTextLocation, editTextAddress;
+    TextView textViewStartDate, textViewStartTime, textViewEndDate, textViewEndTime, textViewOrganiser;
+    Spinner spinner;
     Button btnSubmit;
     ImageButton imageButton;
-    DatePicker datePicker;
-    TimePicker timePicker;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
@@ -73,9 +71,18 @@ public class Upload_Event extends AppCompatActivity {
     final int GALLERY_REQUEST = 1;
     String user_id = "";
 
-    int year = 0;
-    int monthOfYear = 0;
-    int dayOfMonth = 0;
+    int years = 0;
+    int monthOfYears = 0;
+    int dayOfMonths = 0;
+    int day;
+    int hour;
+    int mins;
+    Calendar myCalendar;
+    String message = "";
+    String type;
+    String organiser_name;
+
+    ArrayList<String> categories;
 
     private GoogleMap map;
 
@@ -118,19 +125,160 @@ public class Upload_Event extends AppCompatActivity {
         Storage = FirebaseStorage.getInstance().getReference();
         user_id = mAuth.getCurrentUser().getUid();
 
-        imageButton = (ImageButton) findViewById(R.id.imageButtonUser);
-        etTitle = (EditText)findViewById(R.id.titleH);
-        etDesc = (EditText)findViewById(R.id.descH);
-        etOrganiser = (EditText)findViewById(R.id.organiserH);
-        etHeadChief = (EditText)findViewById(R.id.headChiefH);
-//        etDate = (EditText)findViewById(R.id.dateH);
-//        etTime = (EditText)findViewById(R.id.timeH);
-        etAddress = (EditText)findViewById(R.id.addressH);
-        etPax = (EditText)findViewById(R.id.etPaxH);
-        datePicker = (DatePicker) findViewById(R.id.datePicker);
-        timePicker = (TimePicker) findViewById(R.id.timePicker);
+        myCalendar = Calendar.getInstance();
 
+        imageButton = (ImageButton) findViewById(R.id.ibEvent);
+        editTextAddress = (EditText) findViewById(R.id.etAddress);
+        editTextDesc = (EditText) findViewById(R.id.etDesc);
+        editTextHeadChief = (EditText) findViewById(R.id.etEIC);
+        editTextLocation = (EditText) findViewById(R.id.etLocation);
+        editTextPax = (EditText) findViewById(R.id.etPax);
+        editTextTitle = (EditText) findViewById(R.id.etTitle);
 
+        textViewEndDate = (TextView) findViewById(R.id.tvEndDate);
+        textViewEndTime = (TextView) findViewById(R.id.tvEndTime);
+        textViewStartDate = (TextView) findViewById(R.id.tvStartDate);
+        textViewStartTime = (TextView) findViewById(R.id.tvStartTime);
+        textViewOrganiser = (TextView) findViewById(R.id.tvOrganiser);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        myCalendar.add(Calendar.DATE, 7); // number of days to add
+        String advancedDate = sdf.format(myCalendar.getTime());
+
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 8);
+        String newDate = sdf.format(c.getTime());
+        SimpleDateFormat stf = new SimpleDateFormat("HH:mm");
+        String currentTime = stf.format(myCalendar.getTime());
+
+        textViewStartDate.setText(advancedDate);
+        textViewStartTime.setText(currentTime);
+        textViewEndDate.setText(newDate);
+        textViewEndTime.setText(currentTime);
+
+        mDatabaseOrganiser.child(user_id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                organiser_name = dataSnapshot.child("user_name").getValue().toString();
+                textViewOrganiser.setText("By " + organiser_name);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        textViewOrganiser.setText("By " + organiser_name);
+
+        textViewStartDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Upload_Event.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                years = year;
+                                monthOfYears = monthOfYear;
+                                dayOfMonths = dayOfMonth;
+                                message += day + " " + monthOfYears + " " + year;
+                                java.util.Calendar calendar = java.util.Calendar.getInstance();
+                                calendar.set(years, monthOfYears, day, hour, mins);
+
+                                textViewStartDate.setText(message);
+                            }
+                        }, years, monthOfYears, day);
+
+                datePickerDialog.show();
+            }
+        });
+
+        textViewEndDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Upload_Event.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                years = year;
+                                monthOfYears = monthOfYear;
+                                dayOfMonths = dayOfMonth;
+                                message += day + " " + monthOfYears + " " + year;
+                                java.util.Calendar calendar = java.util.Calendar.getInstance();
+                                calendar.set(years, monthOfYears, day, hour, mins);
+
+                                textViewStartDate.setText(message);
+                            }
+                        }, years, monthOfYears, day);
+
+                datePickerDialog.show();
+            }
+        });
+
+        textViewStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int hours = myCalendar.get(java.util.Calendar.HOUR_OF_DAY);
+                int minutes = myCalendar.get(java.util.Calendar.MINUTE);
+
+                TimePickerDialog timePickerDialog = new TimePickerDialog(Upload_Event.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+                                message += hourOfDay + ":" + minute + " ";
+                                hour = hourOfDay;
+                                mins = minute;
+                                textViewStartTime.setText(message);
+                            }
+                        }, hours, minutes, false);
+                timePickerDialog.show();
+            }
+        });
+
+        textViewEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int hours = myCalendar.get(java.util.Calendar.HOUR_OF_DAY);
+                int minutes = myCalendar.get(java.util.Calendar.MINUTE);
+
+                TimePickerDialog timePickerDialog = new TimePickerDialog(Upload_Event.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+                                message += hourOfDay + ":" + minute + " ";
+                                hour = hourOfDay;
+                                mins = minute;
+                                textViewEndTime.setText(message);
+                            }
+                        }, hours, minutes, false);
+                timePickerDialog.show();
+            }
+        });
+
+        spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.type_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                type = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                type = "";
+            }
+        });
 
         btnSubmit = (Button)findViewById(R.id.submitbutton);
 
@@ -159,8 +307,8 @@ public class Upload_Event extends AppCompatActivity {
     }
 
     public void onMapSearch(View view) {
-        EditText locationSearch = (EditText) findViewById(R.id.addressH);
-        String location = locationSearch.getText().toString();
+
+        String location = editTextAddress.getText().toString();
 
 
         if (location != null || !location.equals("")) {
@@ -182,53 +330,72 @@ public class Upload_Event extends AppCompatActivity {
         Progress.setMessage("Uploading");
         Progress.show();
 
-        String title_val = etTitle.getText().toString().trim();
-        String desc_val = etDesc.getText().toString().trim();
-        String organiser_val = etOrganiser.getText().toString().trim();
-//        String date_val = etDate.getText().toString().trim();
-//        String time_val = etTime.getText().toString().trim();
-        String headChief_val = etHeadChief.getText().toString().trim();
-        String address_val = etAddress.getText().toString().trim();
-        String pax_val = etPax.getText().toString().trim();
-        final DatabaseReference mPost = mDatabase.push();
+        final String title = editTextTitle.getText().toString().trim();
+        final String description = editTextDesc.getText().toString().trim();
+        final String startTime = textViewStartTime.getText().toString().trim();
+        final String startDate = textViewStartDate.getText().toString().trim();
+        final String endTime = textViewEndTime.getText().toString().trim();
+        final String endDate = textViewEndDate.getText().toString().trim();
+        final String location = editTextLocation.getText().toString().trim();
+        final String pax = editTextPax.getText().toString().trim();
+        final String event_in_Charge = editTextHeadChief.getText().toString().trim();
+        final String organiser = user_id;
         Address address = addressList.get(0);
+        final Double lat = address.getLatitude();
+        final Double lng = address.getLongitude();
 
-        int hour = timePicker.getCurrentHour(); //24hr
-        int min = timePicker.getCurrentMinute();
-
-        String time = String.valueOf(hour) + ":" + String.valueOf(min);
-
-        int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth() + 1;
-        int year = datePicker.getYear();
-
-        String date = String.valueOf(day) + "/" + String.valueOf(month) + "/" + String.valueOf(year);
-
-        if (!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && !TextUtils.isEmpty(organiser_val) && !TextUtils.isEmpty(headChief_val) && !TextUtils.isEmpty(address_val) && !TextUtils.isEmpty(pax_val) && uri != null) {
-
-            mPost.child("address").setValue(address_val);
-            mPost.child("date").setValue(date);
-            mPost.child("time").setValue(time);
-            mPost.child("description").setValue(desc_val);
-            mPost.child("head_chief").setValue(headChief_val);
-            mPost.child("organiser_name").setValue(organiser_val);
-            mPost.child("organiser").setValue(user_id);
-            mPost.child("pax").setValue(pax_val);
-            mPost.child("title").setValue(title_val);
-            mPost.child("status").setValue("active");
-            mPost.child("timeStamp").setValue(getCurrentTimeStamp().toString().trim());
-            mPost.child("longitude").setValue(address.getLongitude());
-            mPost.child("latitude").setValue(address.getLatitude());
+        if(fieldVerification(title,
+                description,
+                organiser,
+                startDate,
+                startTime,
+                endDate,
+                endTime,
+                event_in_Charge,
+                pax,
+                lat,
+                lng,
+                location)) {
 
             StorageReference filepath = Storage.child("Event_Image").child(uri.getLastPathSegment());
-
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    mPost.child("image").setValue(downloadUrl.toString());
-                    finish();
+                    String downloadUrl = taskSnapshot.getDownloadUrl().toString().trim();
+                    EVENT event = new EVENT();
+                    event.setTitle(title);
+                    event.setStartTime(startTime);
+                    event.setStartDate(startDate);
+                    event.setEndDate(endDate);
+                    event.setEndTime(endTime);
+                    event.setLat(lat);
+                    event.setLng(lng);
+                    event.setLocation(location);
+                    event.setDescription(description);
+                    event.setHead_chief(event_in_Charge);
+                    event.setOrganiser(organiser);
+                    event.setPax(pax);
+                    event.setTimeStamp(getCurrentTimeStamp());
+                    event.setStatus("active");
+                    event.setImage(downloadUrl);
+                    event.setEventType(type);
 
+                    mDatabase.setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()) {
+
+                                Progress.dismiss();
+                                Intent intent = new Intent(Upload_Event.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+
+                            } else {
+                                Toast.makeText(Upload_Event.this, task.getException().toString().trim(), Toast.LENGTH_LONG);
+                            }
+                        }
+                    });
                 }
             });
 
@@ -274,4 +441,37 @@ public class Upload_Event extends AppCompatActivity {
             return null;
         }
     }
+
+    public Boolean fieldVerification(String title,
+                                     String description,
+                                     String organiser,
+                                     String startDate,
+                                     String startTime,
+                                     String endDate,
+                                     String endTime,
+                                     String event_in_Charge,
+                                     String pax,
+                                     Double lat,
+                                     Double lng,
+                                     String location) {
+
+        if (!TextUtils.isEmpty(title) &&
+                !TextUtils.isEmpty(description) &&
+                !TextUtils.isEmpty(organiser) &&
+                !TextUtils.isEmpty(startDate) &&
+                !TextUtils.isEmpty(startTime) &&
+                !TextUtils.isEmpty(endDate) &&
+                !TextUtils.isEmpty(endTime) &&
+                !TextUtils.isEmpty(event_in_Charge) &&
+                !TextUtils.isEmpty(pax) &&
+                !TextUtils.isEmpty(location) &&
+                lat != null &&
+                lng != null &&
+                uri != null) {
+            return true;
+        }
+        return false;
+    }
 }
+
+
