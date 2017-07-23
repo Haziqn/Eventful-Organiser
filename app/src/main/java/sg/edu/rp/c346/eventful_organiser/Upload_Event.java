@@ -90,6 +90,7 @@ public class Upload_Event extends AppCompatActivity {
 
     ProgressDialog Progress;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -380,7 +381,7 @@ public class Upload_Event extends AppCompatActivity {
                     event.setImage(downloadUrl);
                     event.setEventType(type);
 
-                    mDatabase.setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mDatabase.push().setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
 

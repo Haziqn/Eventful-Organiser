@@ -51,7 +51,7 @@ public class liveFragment extends Fragment {
                 EVENT.class,
                 R.layout.row,
                 BlogViewHolder.class,
-                mQuery
+                mDatabase
         ) {
             @Override
             protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, final int position) {
@@ -166,7 +166,7 @@ public class liveFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         String uid = firebaseAuth.getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
-        mQuery = mDatabase.orderByChild("organiser").equalTo(uid);
+//        mQuery = mDatabase.orderByChild("organiser").equalTo(uid);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);

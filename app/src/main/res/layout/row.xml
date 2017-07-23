@@ -67,7 +67,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="8dp"
-                        android:text="Location" />
+                        android:text="Location"
+                        android:textStyle="bold" />
 
                     <View
                         android:layout_width="fill_parent"
@@ -83,7 +84,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="8dp"
                         android:text="Address"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -100,7 +102,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="8dp"
-                        android:text="Tickets left" />
+                        android:text="Tickets left"
+                        android:textStyle="bold" />
 
                     <View
                         android:layout_width="fill_parent"
@@ -116,7 +119,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="8dp"
                         android:text="100"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
             </LinearLayout>
