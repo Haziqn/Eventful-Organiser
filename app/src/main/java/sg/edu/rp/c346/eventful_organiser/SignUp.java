@@ -246,9 +246,9 @@ public class SignUp extends AppCompatActivity {
 
                         final String decodePassword = decode_password(password);
 
-                        Address address = addressList.get(0);
-                        final Double lat = address.getLatitude();
-                        final Double lng = address.getLongitude();
+                        final Address addressMap = addressList.get(0);
+                        final Double lat = addressMap.getLatitude();
+                        final Double lng = addressMap.getLongitude();
 
                         String user_id = mAuth.getCurrentUser().getUid();
                         final DatabaseReference current_user_db = mDatabase.child(user_id);
@@ -268,6 +268,7 @@ public class SignUp extends AppCompatActivity {
                                     organiser.setBusiness_type(type);
                                     organiser.setAcra(acra);
                                     organiser.setDescription(description);
+                                    organiser.setAddress(address);
                                     organiser.setLat(lat);
                                     organiser.setLng(lng);
                                     downloadUrl = task.getResult().getDownloadUrl().toString();

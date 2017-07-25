@@ -15,6 +15,7 @@ public class ORGANISER {
     String site;
     String description;
     String business_type;
+    String address;
     Integer contact_num;
     private Double lat;
     private Double lng;
@@ -23,7 +24,7 @@ public class ORGANISER {
 
     }
 
-    public ORGANISER(String email, String image, String password, String status, String user_name, String acra, String site, String description, String business_type, Double lat, Double lng, Integer contact_num) {
+    public ORGANISER(String email, String image, String password, String status, String user_name, String acra, String site, String description, String business_type, String address, Double lat, Double lng, Integer contact_num) {
         this.email = email;
         this.image = image;
         this.password = password;
@@ -33,6 +34,7 @@ public class ORGANISER {
         this.site = site;
         this.description = description;
         this.business_type = business_type;
+        this.address = address;
         this.lat = lat;
         this.lng = lng;
         this.contact_num = contact_num;
@@ -108,6 +110,14 @@ public class ORGANISER {
 
     public void setBusiness_type(String business_type) {
         this.business_type = business_type;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Double getLat() {
