@@ -9,6 +9,15 @@
     <string name="btnLogin">Login</string>
     <string name="welcome">Welcome Eventful</string>
     <string name="action_settings">Settings</string>
+    <string name="termsAndConditions">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eu lorem sapien. Donec consequat sapien tincidunt tristique bibendum. Integer at enim quis justo dictum cursus. Aliquam in viverra nunc. Suspendisse tincidunt accumsan dolor, id rutrum tellus dapibus quis. Vivamus volutpat faucibus semper. Maecenas nisi massa, vestibulum in turpis in, rutrum hendrerit nulla. Curabitur congue euismod rhoncus.
+
+Vivamus elementum neque neque, sit amet iaculis odio congue sed. Suspendisse et eleifend dui, vitae sodales felis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet placerat leo. Ut tempor maximus lacus ut egestas. Donec mollis rhoncus feugiat. Vivamus id vehicula quam, a convallis nulla. Ut id ipsum ullamcorper, dictum enim nec, euismod massa. Duis at massa quis lacus interdum pharetra.
+
+Morbi bibendum sem ac enim mollis congue. Sed lacinia nunc non volutpat cursus. Donec vel posuere felis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque finibus pretium leo ut rutrum. Donec auctor facilisis sapien, hendrerit semper libero imperdiet in. Sed scelerisque nisi sed fermentum faucibus. Cras sodales, odio non aliquam accumsan, turpis mi dapibus risus, accumsan lacinia enim eros nec eros. Maecenas viverra nibh purus, placerat consectetur diam euismod ut. Vestibulum sollicitudin lacinia elit sed efficitur. Duis mattis elementum tortor, nec tincidunt augue rhoncus eget. Duis eu lobortis dui.
+
+Morbi malesuada gravida diam, in tincidunt est tempus eu. Ut eleifend condimentum porta. Proin ac rhoncus diam. Etiam a nibh eget urna eleifend tincidunt. Donec ornare orci orci, vel mattis libero ultricies sed. Duis fringilla libero id facilisis mollis. Proin et hendrerit enim. Phasellus vel suscipit turpis, mollis eleifend eros. Maecenas diam quam, molestie eget ullamcorper placerat, gravida id augue.
+
+In imperdiet lectus commodo luctus consectetur. Maecenas condimentum porttitor augue, viverra pretium felis tempus egestas. Aenean et placerat eros. Duis et dapibus lorem. Fusce tristique tempor augue, sed sollicitudin nulla placerat ac. Maecenas sed nisi mauris. Aliquam vulputate, dui quis auctor pretium, mi tortor ultricies lacus, sed posuere sem velit quis risus. Vestibulum ligula diam, mollis quis dapibus eget, lacinia vitae diam. Interdum et malesuada fames ac ante ipsum primis in faucibus.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
