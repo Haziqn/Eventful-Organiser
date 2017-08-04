@@ -51,7 +51,7 @@ public class liveFragment extends Fragment {
                 EVENT.class,
                 R.layout.row,
                 BlogViewHolder.class,
-                mDatabase
+                mQuery
         ) {
             @Override
             protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, final int position) {
@@ -75,7 +75,6 @@ public class liveFragment extends Fragment {
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.setLocation(model.getLocation());
                 viewHolder.setOrganiser(organiser_name);
-                viewHolder.setPax(model.getPax());
 
                 viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -130,32 +129,27 @@ public class liveFragment extends Fragment {
 
         }
 
-        public void setTitle(String title) {
-            TextView postTitle = (TextView)mView.findViewById(R.id.eventTitle);
-            postTitle.setText(title);
-        }
+            public void setTitle(String title) {
+                TextView postTitle = (TextView)mView.findViewById(R.id.eventTitle);
+                postTitle.setText(title);
+            }
 
-        public void setImage(Context ctx, String image) {
-            ImageView post_Image = (ImageView)mView.findViewById(R.id.ivEvent);
-            Picasso.with(ctx).load(image).into(post_Image);
-        }
+            public void setImage(Context ctx, String image) {
+                ImageView post_Image = (ImageView)mView.findViewById(R.id.ivEvent);
+                Picasso.with(ctx).load(image).into(post_Image);
+            }
 
-        public void setLocation(String location) {
-            TextView locations = (TextView)mView.findViewById(R.id.eventAddress);
-            locations.setText(location);
-        }
+            public void setLocation(String location) {
+                TextView locations = (TextView)mView.findViewById(R.id.eventAddress);
+                locations.setText(location);
+            }
 
-        public void setOrganiser(String organiser) {
-            TextView organisers = (TextView)mView.findViewById(R.id.eventOrganiser);
-            organisers.setText(organiser);
-        }
+            public void setOrganiser(String organiser) {
+                TextView organisers = (TextView)mView.findViewById(R.id.eventOrganiser);
+                organisers.setText(organiser);
+            }
 
-
-        public void setPax(String pax) {
-            TextView paxes = (TextView)mView.findViewById(R.id.eventTickets);
-            paxes.setText(pax);
         }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -166,7 +160,7 @@ public class liveFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         String uid = firebaseAuth.getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
-//        mQuery = mDatabase.orderByChild("organiser").equalTo(uid);
+        mQuery = mDatabase.orderByChild("organiser").equalTo(uid);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
@@ -176,17 +170,6 @@ public class liveFragment extends Fragment {
 
         return view;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

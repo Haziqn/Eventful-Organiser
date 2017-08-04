@@ -57,7 +57,7 @@ import java.util.List;
 
 public class Upload_Event extends AppCompatActivity {
 
-    EditText editTextTitle, editTextDesc, editTextPax, editTextHeadChief, editTextLocation, editTextAddress;
+    EditText editTextTitle, editTextDesc, editTextHeadChief, editTextLocation, editTextAddress;
     TextView textViewStartDate, textViewStartTime, textViewEndDate, textViewEndTime, textViewOrganiser;
     Spinner spinner;
     Button btnSubmit;
@@ -82,14 +82,11 @@ public class Upload_Event extends AppCompatActivity {
     String type;
     String organiser_name;
 
-    ArrayList<String> categories;
-
     private GoogleMap map;
 
     List<Address> addressList = null;
 
     ProgressDialog Progress;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +109,10 @@ public class Upload_Event extends AppCompatActivity {
                 LatLng singapore = new LatLng(1.3553794, 103.8677444);
                 map.addMarker(new MarkerOptions().position(singapore).title("Singapore"));
                 map.moveCamera(CameraUpdateFactory.newLatLng(singapore));
-                if (ActivityCompat.checkSelfPermission(Upload_Event.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Upload_Event.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(Upload_Event.this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(Upload_Event.this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
                 map.setMyLocationEnabled(true);
@@ -133,7 +133,6 @@ public class Upload_Event extends AppCompatActivity {
         editTextDesc = (EditText) findViewById(R.id.etDesc);
         editTextHeadChief = (EditText) findViewById(R.id.etEIC);
         editTextLocation = (EditText) findViewById(R.id.etLocation);
-        editTextPax = (EditText) findViewById(R.id.etPax);
         editTextTitle = (EditText) findViewById(R.id.etTitle);
 
         textViewEndDate = (TextView) findViewById(R.id.tvEndDate);
@@ -338,7 +337,6 @@ public class Upload_Event extends AppCompatActivity {
         final String endTime = textViewEndTime.getText().toString().trim();
         final String endDate = textViewEndDate.getText().toString().trim();
         final String location = editTextLocation.getText().toString().trim();
-        final String pax = editTextPax.getText().toString().trim();
         final String event_in_Charge = editTextHeadChief.getText().toString().trim();
         final String organiser = user_id;
         Address address = addressList.get(0);
@@ -353,7 +351,6 @@ public class Upload_Event extends AppCompatActivity {
                 endDate,
                 endTime,
                 event_in_Charge,
-                pax,
                 lat,
                 lng,
                 location)) {
@@ -375,7 +372,6 @@ public class Upload_Event extends AppCompatActivity {
                     event.setDescription(description);
                     event.setHead_chief(event_in_Charge);
                     event.setOrganiser(organiser);
-                    event.setPax(pax);
                     event.setTimeStamp(getCurrentTimeStamp());
                     event.setStatus("active");
                     event.setImage(downloadUrl);
@@ -451,7 +447,6 @@ public class Upload_Event extends AppCompatActivity {
                                      String endDate,
                                      String endTime,
                                      String event_in_Charge,
-                                     String pax,
                                      Double lat,
                                      Double lng,
                                      String location) {
@@ -464,7 +459,6 @@ public class Upload_Event extends AppCompatActivity {
                 !TextUtils.isEmpty(endDate) &&
                 !TextUtils.isEmpty(endTime) &&
                 !TextUtils.isEmpty(event_in_Charge) &&
-                !TextUtils.isEmpty(pax) &&
                 !TextUtils.isEmpty(location) &&
                 lat != null &&
                 lng != null &&
@@ -474,5 +468,3 @@ public class Upload_Event extends AppCompatActivity {
         return false;
     }
 }
-
-

@@ -339,28 +339,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvPax"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:paddingTop="16dp"
-                        android:text="Number of Pax:"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/etPax"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="100"
-                        android:inputType="number"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp" />
-
-                    <TextView
                         android:id="@+id/tvEIC"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
