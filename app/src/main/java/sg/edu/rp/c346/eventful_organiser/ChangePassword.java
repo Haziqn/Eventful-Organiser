@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,6 +32,15 @@ public class ChangePassword extends AppCompatActivity {
         etEmail = (EditText)findViewById(R.id.etEmail);
         etPassword = (EditText)findViewById(R.id.etPassword);
         btnChange = (Button)findViewById(R.id.btnChange);
+
+        etEmail.setClickable(false);
+
+        btnChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ChangePassword.this, "Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 //
 //    public void changePassword() {
