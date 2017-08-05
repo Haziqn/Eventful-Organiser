@@ -39,7 +39,7 @@ import static sg.edu.rp.c346.eventful_organiser.SignIn.MY_PREFS_NAME;
 public class UserAccount extends AppCompatActivity {
 
     EditText editName, editEmail, editPassword;
-    Button buttonUpdate, buttonDelete, buttonResetPassword;
+    Button btnUpdate, btnDelete, btnResetPassword;
     ImageButton imageButton;
 
     FirebaseAuth mAuth;
@@ -62,6 +62,8 @@ public class UserAccount extends AppCompatActivity {
         mOrganiser = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
 
         mProgress = new ProgressDialog(this);
+
+        btnUpdate = (Button)findViewById(R.id.btnUpdate);
 
         final EditText etName = (EditText)findViewById(R.id.etName);
         final EditText etNum = (EditText)findViewById(R.id.etNum);
@@ -117,13 +119,12 @@ public class UserAccount extends AppCompatActivity {
             }
         });
 //
-//        buttonUpdate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(UserAccount.this, "Clicked", Toast.LENGTH_SHORT).show();
-//                updateUserInfo();
-//            }
-//        });
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateUserInfo();
+            }
+        });
 //
 //        buttonDelete.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -184,41 +185,43 @@ public class UserAccount extends AppCompatActivity {
     }
 
     public void updateUserInfo() {
-        Toast.makeText(UserAccount.this, "in update", Toast.LENGTH_SHORT).show();
-        final String email = editEmail.getText().toString();
-        final String username = editName.getText().toString();
+
+        final EditText etName = (EditText)findViewById(R.id.etName);
+        final EditText etNum = (EditText)findViewById(R.id.etNum);
+        final EditText etSite = (EditText)findViewById(R.id.etSite);
+        final EditText etDesc = (EditText)findViewById(R.id.etDesc);
+        final EditText etAcra = (EditText)findViewById(R.id.etAcra);
+        final EditText etAddress = (EditText)findViewById(R.id.etAddress);
+        final EditText etEmail = (EditText)findViewById(R.id.etEmail);
+
+        final String name = etName.getText().toString();
+        final String num = etNum.getText().toString();
+        final String site = etSite.getText().toString();
+        final String desc = etDesc.getText().toString();
+        final String acra = etAcra.getText().toString();
+        final String address = etAddress.getText().toString();
+        final String email = etEmail.getText().toString();
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = user.getUid();
 
-        if (uri != null) {
-            user.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Log.d("UpdateAccount", "User email address updated.");
-                        mDatabase.child(uid).child("email").setValue(email);
-                        mDatabase.child(uid).child("user_name").setValue(username);
+        mOrganiser.child(uid).child("user_name").setValue(name);
+        mOrganiser.child(uid).child("contact_num").setValue(num);
+        mOrganiser.child(uid).child("site").setValue(site);
+        mOrganiser.child(uid).child("description").setValue(desc);
+        mOrganiser.child(uid).child("acra").setValue(acra);
+        mOrganiser.child(uid).child("address").setValue(address);
+        mOrganiser.child(uid).child("email").setValue(email);
 
-                        StorageReference filepath = Storage.child("User_Image").child(uri.getLastPathSegment());
-
-                        filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                downloadUrl = taskSnapshot.getDownloadUrl().toString();
-                                mDatabase.child(uid).child("image").setValue(downloadUrl);
-                                finish();
-
-                            }
-                        });
-                        Intent intent = new Intent(UserAccount.this, SignIn.class);
-                        startActivity(intent);
-                        Toast.makeText(UserAccount.this, "Please sign in again", Toast.LENGTH_LONG).show();
-                    } else {
-                        Log.e("Update", task.getException().toString());
-                    }
-                }
-            });
-        }
+//        StorageReference filepath = Storage.child("User_Image").child(uri.getLastPathSegment());
+//
+//        filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                downloadUrl = taskSnapshot.getDownloadUrl().toString();
+//                mDatabase.child(uid).child("image").setValue(downloadUrl);
+//                finish();
+//            }
+//        });
     }
 
     public void userDelete() {
