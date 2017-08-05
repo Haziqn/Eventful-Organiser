@@ -292,6 +292,7 @@ public class SignUp extends AppCompatActivity {
                                     ORGANISER organiser = new ORGANISER();
 
                                     organiser.setEmail(email);
+                                    organiser.setContact_num(Integer.parseInt(contact_number));
                                     organiser.setPassword(decodePassword);
                                     organiser.setStatus("active");
                                     organiser.setUser_name(name);
@@ -402,5 +403,4 @@ public class SignUp extends AppCompatActivity {
             circleImageView.setImageURI(uri);
         }
     }
-
 }

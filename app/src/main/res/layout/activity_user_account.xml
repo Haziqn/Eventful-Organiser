@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,103 +8,132 @@
     android:orientation="vertical"
     tools:context="sg.edu.rp.c346.eventful_organiser.UserAccount">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageButtonUser"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
-        android:src="@drawable/f3"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageButtonUser"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvDiscover">
-
-        <TextView
-            android:id="@+id/tvUsername"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="USERNAME"
-            android:textColor="@color/colorAccent"
-            android:textColorLink="@color/colorPrimary"
-            app:layout_constraintTop_toBottomOf="@+id/imageButtonUser" />
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/tvEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="EMAIL"
-            android:textColor="@color/colorAccent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageButtonUser"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/f3" />
 
-        <TextView
-            android:id="@+id/tvOccupation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="OCCUPATION"
-            app:layout_constraintTop_toBottomOf="@+id/tvInterests" />
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Company Name:" />
 
-        <TextView
-            android:id="@+id/tvAge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="AGE" />
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
 
-        <TextView
-            android:id="@+id/tvRace"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Race"/>
+            <TextView
+                android:id="@+id/tvNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Contact Number:" />
 
-        <TextView
-            android:id="@+id/tvInterests"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="My interests: "
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="215dp" />
+            <EditText
+                android:id="@+id/etNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvSite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Business Site:" />
 
-    <Button
-        android:id="@+id/btnShare"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#D62828"
-        android:text="Share on Facebook"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+            <EditText
+                android:id="@+id/etSite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
 
-    <Button
-        android:id="@+id/tvDiscover"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:text="My Events"
-        app:layout_constraintBottom_toTopOf="@+id/btnShare"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+            <TextView
+                android:id="@+id/tvDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description:" />
 
-</android.support.constraint.ConstraintLayout>
+            <EditText
+                android:id="@+id/etDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:id="@+id/tvAcra"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Business ACRA:" />
+
+            <EditText
+                android:id="@+id/etAcra"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Address:" />
+
+            <EditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email:" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Button" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import static sg.edu.rp.c346.eventful_organiser.SignIn.MY_PREFS_NAME;
 
@@ -40,6 +42,7 @@ public class UserAccount extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
+    DatabaseReference mOrganiser;
     StorageReference Storage;
     private Uri uri = null;
     public String downloadUrl = "";
@@ -54,46 +57,73 @@ public class UserAccount extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
         Storage = FirebaseStorage.getInstance().getReference();
+        mOrganiser = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
 
         mProgress = new ProgressDialog(this);
 
-//        editName = (EditText) findViewById(R.id.etName);
-//        editEmail = (EditText) findViewById(R.id.etEmailLogin);
-//        editPassword = (EditText) findViewById(R.id.etPwLogin);
-//        imageButton = (ImageButton) findViewById(R.id.imageButtonUser);
-//        buttonUpdate = (Button) findViewById(R.id.btnUpdate);
-//        buttonDelete = (Button) findViewById(R.id.btnDelete);
-//        buttonResetPassword = (Button) findViewById(R.id.btnResetPw);
-//
-//        editPassword.setClickable(false);
-//
-//        final FirebaseUser user = mAuth.getCurrentUser();
-//        final String uid = user.getUid();
-//
-//        DatabaseReference mDatabaseRef = mDatabase.child(uid);
-//
-//        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                ORGANISER organiser = dataSnapshot.getValue(ORGANISER.class);
-//                String email = organiser.getEmail().toString().trim();
-//                String username = organiser.getUser_name().toString().trim();
-//                SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-//                String password = prefs.getString("password", "");
-////                String image = participant.getImage().toString().trim();
-//
-//                editEmail.setText(email);
-//                editName.setText(username);
-//                editPassword.setText(password);
-////                Picasso.with(UserAccount.this).load(image).into(imageButton);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        final EditText etName = (EditText)findViewById(R.id.etName);
+        final EditText etNum = (EditText)findViewById(R.id.etNum);
+        final EditText etSite = (EditText)findViewById(R.id.etSite);
+        final EditText etDesc = (EditText)findViewById(R.id.etDesc);
+        final EditText etAcra = (EditText)findViewById(R.id.etAcra);
+        final EditText etAddress = (EditText)findViewById(R.id.etAddress);
+        final EditText etEmail = (EditText)findViewById(R.id.etEmail);
+
+        final FirebaseUser user = mAuth.getCurrentUser();
+        final String uid = user.getUid();
+
+        DatabaseReference mDatabaseRef = mOrganiser.child(uid);
+
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Boolean hasImage = dataSnapshot.hasChild("image");
+                Boolean hasName = dataSnapshot.hasChild("user_name");
+                Boolean hasNumber = dataSnapshot.hasChild("contact_num");
+                Boolean hasSite = dataSnapshot.hasChild("site");
+                Boolean hasDesc = dataSnapshot.hasChild("description");
+                Boolean hasAcra = dataSnapshot.hasChild("acra");
+                Boolean hasAddress = dataSnapshot.hasChild("address");
+                Boolean hasEmail = dataSnapshot.hasChild("email");
+
+                if (hasImage && hasName && hasNumber && hasSite && hasDesc && hasAcra && hasAddress && hasEmail) {
+                    String image = dataSnapshot.child("image").getValue().toString();
+                    String user_name = dataSnapshot.child("user_name").getValue().toString();
+                    String contact_num = dataSnapshot.child("contact_num").getValue().toString();
+                    String site = dataSnapshot.child("site").getValue().toString();
+                    String description = dataSnapshot.child("description").getValue().toString();
+                    String acra = dataSnapshot.child("acra").getValue().toString();
+                    String address = dataSnapshot.child("address").getValue().toString();
+                    String email = dataSnapshot.child("email").getValue().toString();
+
+                    etEmail.setText(email);
+                    etName.setText(user_name);
+                    etNum.setText(contact_num);
+                    etSite.setText(site);
+                    etDesc.setText(description);
+                    etAcra.setText(acra);
+                    etAddress.setText(address);
+                    Picasso.with(getBaseContext()).load(image).into(imageButton);
+
+                    ORGANISER organiser = new ORGANISER();
+
+                    organiser.setUser_name(user_name);
+                    organiser.setContact_num(Integer.parseInt(contact_num));
+                    organiser.setSite(site);
+                    organiser.setDescription(description);
+                    organiser.setAcra(acra);
+                    organiser.setAddress(address);
+                    organiser.setEmail(email);
+                    Picasso.with(UserAccount.this).load(image).into(imageButton);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 //
 //        buttonUpdate.setOnClickListener(new View.OnClickListener() {
 //            @Override

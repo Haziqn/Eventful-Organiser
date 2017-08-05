@@ -111,8 +111,6 @@ public class UpdateEvent extends AppCompatActivity {
                         updateUserInfo();
                     }
                 });
-
-
             }
 
             @Override
