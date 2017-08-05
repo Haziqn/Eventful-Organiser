@@ -71,9 +71,9 @@ public class Upload_Event extends AppCompatActivity {
     final int GALLERY_REQUEST = 1;
     String user_id = "";
 
-    int years = 0;
-    int monthOfYears = 0;
-    int dayOfMonths = 0;
+    int years;
+    int monthOfYears;
+    int dayOfMonths;
     int day;
     int hour;
     int mins;
@@ -127,6 +127,9 @@ public class Upload_Event extends AppCompatActivity {
         user_id = mAuth.getCurrentUser().getUid();
 
         myCalendar = Calendar.getInstance();
+        years = myCalendar.get(Calendar.YEAR);
+        monthOfYears = myCalendar.get(Calendar.MONTH);
+        day = myCalendar.get(Calendar.DAY_OF_MONTH);
 
         imageButton = (ImageButton) findViewById(R.id.ibEvent);
         editTextAddress = (EditText) findViewById(R.id.etAddress);
@@ -180,14 +183,12 @@ public class Upload_Event extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                years = year;
-                                monthOfYears = monthOfYear;
-                                dayOfMonths = dayOfMonth;
-                                message += day + " " + monthOfYears + " " + year;
-                                java.util.Calendar calendar = java.util.Calendar.getInstance();
-                                calendar.set(years, monthOfYears, day, hour, mins);
 
+                                message += dayOfMonth + "/" + monthOfYear + "/" + year;
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(years, monthOfYears, day, hour, mins);
                                 textViewStartDate.setText(message);
+                                message = "";
                             }
                         }, years, monthOfYears, day);
 
@@ -204,14 +205,12 @@ public class Upload_Event extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                years = year;
-                                monthOfYears = monthOfYear;
-                                dayOfMonths = dayOfMonth;
-                                message += day + " " + monthOfYears + " " + year;
-                                java.util.Calendar calendar = java.util.Calendar.getInstance();
-                                calendar.set(years, monthOfYears, day, hour, mins);
 
+                                message += dayOfMonth + "/" + monthOfYear + "/" + year;
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(years, monthOfYears, day, hour, mins);
                                 textViewEndDate.setText(message);
+                                message = "";
                             }
                         }, years, monthOfYears, day);
 
@@ -222,8 +221,8 @@ public class Upload_Event extends AppCompatActivity {
         textViewStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int hours = myCalendar.get(java.util.Calendar.HOUR_OF_DAY);
-                int minutes = myCalendar.get(java.util.Calendar.MINUTE);
+                int hours = myCalendar.get(Calendar.HOUR_OF_DAY);
+                int minutes = myCalendar.get(Calendar.MINUTE);
 
                 TimePickerDialog timePickerDialog = new TimePickerDialog(Upload_Event.this,
                         new TimePickerDialog.OnTimeSetListener() {
@@ -235,6 +234,7 @@ public class Upload_Event extends AppCompatActivity {
                                 hour = hourOfDay;
                                 mins = minute;
                                 textViewStartTime.setText(message);
+                                message = "";
                             }
                         }, hours, minutes, false);
                 timePickerDialog.show();
@@ -257,6 +257,7 @@ public class Upload_Event extends AppCompatActivity {
                                 hour = hourOfDay;
                                 mins = minute;
                                 textViewEndTime.setText(message);
+                                message = "";
                             }
                         }, hours, minutes, false);
                 timePickerDialog.show();
