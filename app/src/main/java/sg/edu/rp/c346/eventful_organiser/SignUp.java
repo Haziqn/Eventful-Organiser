@@ -87,8 +87,9 @@ public class SignUp extends AppCompatActivity {
     ProgressDialog mProgress;
 
     String name = "";
-    String acra = "";
+    String acra  = "";
     String contact_number = "";
+    Integer cumn;
     String email = "";
     String address = "";
     String website = "";
@@ -187,6 +188,7 @@ public class SignUp extends AppCompatActivity {
                 name = editTextName.getText().toString().trim();
                 acra = editTextACRA.getText().toString().trim();
                 contact_number = editTextNumber.getText().toString().trim();
+                cumn = Integer.parseInt(contact_number);
                 email = editTextEmail.getText().toString().trim();
                 website = editTextWebsite.getText().toString().trim();
                 address = editTextAddress.getText().toString().trim();
@@ -285,6 +287,7 @@ public class SignUp extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()) {
+                                    Toast.makeText(SignUp.this, "debug", Toast.LENGTH_SHORT).show();
 
                                     ORGANISER organiser = new ORGANISER();
 
@@ -297,6 +300,7 @@ public class SignUp extends AppCompatActivity {
                                     organiser.setAcra(acra);
                                     organiser.setDescription(description);
                                     organiser.setAddress(address);
+                                    organiser.setContact_num(cumn);
                                     organiser.setLat(lat);
                                     organiser.setLng(lng);
                                     downloadUrl = task.getResult().getDownloadUrl().toString();

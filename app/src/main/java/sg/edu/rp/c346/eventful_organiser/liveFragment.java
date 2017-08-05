@@ -3,6 +3,7 @@ package sg.edu.rp.c346.eventful_organiser;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static sg.edu.rp.c346.eventful_organiser.R.layout.fragment_live;
 
@@ -157,6 +162,7 @@ public class liveFragment extends Fragment {
 
         View view = inflater.inflate(fragment_live,
                 container, false);
+
         firebaseAuth = FirebaseAuth.getInstance();
         String uid = firebaseAuth.getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");

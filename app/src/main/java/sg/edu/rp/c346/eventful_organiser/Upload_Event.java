@@ -211,7 +211,7 @@ public class Upload_Event extends AppCompatActivity {
                                 java.util.Calendar calendar = java.util.Calendar.getInstance();
                                 calendar.set(years, monthOfYears, day, hour, mins);
 
-                                textViewStartDate.setText(message);
+                                textViewEndDate.setText(message);
                             }
                         }, years, monthOfYears, day);
 
