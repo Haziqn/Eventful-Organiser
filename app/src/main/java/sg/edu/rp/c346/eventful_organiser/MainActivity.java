@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity
                     databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            ORGANISER organiser = dataSnapshot.getValue(ORGANISER.class);
                             String user_name = dataSnapshot.child("user_name").getValue().toString();
                             String email = dataSnapshot.child("email").getValue().toString();
                             String image = dataSnapshot.child("image").getValue().toString();

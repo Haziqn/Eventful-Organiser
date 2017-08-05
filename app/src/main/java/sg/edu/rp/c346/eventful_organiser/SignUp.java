@@ -62,11 +62,11 @@ import javax.crypto.spec.SecretKeySpec;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SignUp extends AppCompatActivity {
-
     EditText editTextName,
             editTextACRA,
             editTextNumber,
             editTextEmail,
+
             editTextWebsite,
             editTextAddress,
             editTextDescription,
@@ -108,6 +108,7 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         getSupportActionBar().setTitle("Eventful - Sign Up");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
@@ -402,5 +403,15 @@ public class SignUp extends AppCompatActivity {
 
             circleImageView.setImageURI(uri);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

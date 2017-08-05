@@ -32,6 +32,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static sg.edu.rp.c346.eventful_organiser.SignIn.MY_PREFS_NAME;
 
 public class UserAccount extends AppCompatActivity {
@@ -68,6 +70,7 @@ public class UserAccount extends AppCompatActivity {
         final EditText etAcra = (EditText)findViewById(R.id.etAcra);
         final EditText etAddress = (EditText)findViewById(R.id.etAddress);
         final EditText etEmail = (EditText)findViewById(R.id.etEmail);
+        final CircleImageView imageButton = (CircleImageView) findViewById(R.id.imageButtonUser);
 
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = user.getUid();
@@ -103,17 +106,6 @@ public class UserAccount extends AppCompatActivity {
                     etDesc.setText(description);
                     etAcra.setText(acra);
                     etAddress.setText(address);
-                    Picasso.with(getBaseContext()).load(image).into(imageButton);
-
-                    ORGANISER organiser = new ORGANISER();
-
-                    organiser.setUser_name(user_name);
-                    organiser.setContact_num(Integer.parseInt(contact_num));
-                    organiser.setSite(site);
-                    organiser.setDescription(description);
-                    organiser.setAcra(acra);
-                    organiser.setAddress(address);
-                    organiser.setEmail(email);
                     Picasso.with(UserAccount.this).load(image).into(imageButton);
                 }
 
