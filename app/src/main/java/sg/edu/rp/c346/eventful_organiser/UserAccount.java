@@ -48,7 +48,7 @@ import static sg.edu.rp.c346.eventful_organiser.SignIn.MY_PREFS_NAME;
 
 public class UserAccount extends AppCompatActivity {
 
-    Button btnUpdate, btnDelete, btnChange;
+    Button btnUpdate, btnChange;
     ImageButton imageButton;
 
     FirebaseAuth mAuth;
@@ -76,7 +76,6 @@ public class UserAccount extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
 
         btnUpdate = (Button)findViewById(R.id.btnUpdate);
-        btnDelete = (Button)findViewById(R.id.btnDelete);
         btnChange = (Button)findViewById(R.id.btnChange);
 
         final EditText etName = (EditText)findViewById(R.id.etName);
@@ -140,32 +139,6 @@ public class UserAccount extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 updateUserInfo();
-            }
-        });
-
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder myBuilder = new AlertDialog.Builder(UserAccount.this);
-
-                myBuilder.setTitle("Delete Account");
-                myBuilder.setMessage("Are you sure?");
-                myBuilder.setCancelable(false);
-                myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        userDelete();
-                        Intent i = new Intent(UserAccount.this, SignUp.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
-
-                    }
-                });
-                myBuilder.setNegativeButton("Cancel", null);
-
-                AlertDialog myDialog = myBuilder.create();
-                myDialog.show();
-
             }
         });
 //
