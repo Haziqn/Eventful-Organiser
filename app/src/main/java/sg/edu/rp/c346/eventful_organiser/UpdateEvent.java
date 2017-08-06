@@ -338,7 +338,25 @@ public class UpdateEvent extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startPosting();
+                final String title = editTextTitle.getText().toString().trim();
+                final String description = editTextDesc.getText().toString().trim();
+                final String location = editTextLocation.getText().toString().trim();
+                final String event_in_Charge = editTextHeadChief.getText().toString().trim();
+                final String address = editTextAddress.getText().toString().trim();
+
+                if (TextUtils.isEmpty(title)) {
+                    editTextTitle.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(description)){
+                    editTextDesc.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(location)){
+                    editTextLocation.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(address)){
+                    editTextAddress.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(event_in_Charge)){
+                    editTextHeadChief.setError("Field should not be empty.");
+                } else {
+                    startPosting();
+                }
             }
 
         });
@@ -434,25 +452,28 @@ public class UpdateEvent extends AppCompatActivity {
         finish();
     }
 
-//    public void onMapSearch(View view) {
-//
-//        String location = editTextAddress.getText().toString();
-//
-//
-//        if (location != null || !location.equals("")) {
-//            Geocoder geocoder = new Geocoder(this);
-//            try {
-//                addressList = geocoder.getFromLocationName(location, 1);
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Address address = addressList.get(0);
-//            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-//            map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-//            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
-//        }
-//    }
+    public void onMapSearch(View view) {
+
+        String location = editTextAddress.getText().toString();
+
+        if (TextUtils.isEmpty(location)) {
+            editTextAddress.setError("Please input an address.");
+        } else {
+            if (location != null || !location.equals("")) {
+                Geocoder geocoder = new Geocoder(this);
+                try {
+                    addressList = geocoder.getFromLocationName(location, 1);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+            }
+        }
+    }
 
     public static String getCurrentTimeStamp(){
         try {
@@ -479,5 +500,14 @@ public class UpdateEvent extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }
