@@ -28,7 +28,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         app:backgroundTint="@color/colorPrimaryDark"
-        app:srcCompat="@drawable/add" />
+        app:srcCompat="@android:drawable/ic_input_add" />
 
     <include layout="@layout/content_main" />
 

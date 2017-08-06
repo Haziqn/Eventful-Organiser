@@ -55,6 +55,12 @@ public class MainActivity extends AppCompatActivity
             final FirebaseUser user = mAuth.getCurrentUser();
             databaseReference = FirebaseDatabase.getInstance().getReference("ORGANISER");
 
+            if (user == null) {
+                startActivity(new Intent(this, StartActivity.class));
+                finish();
+                return;
+            } else {
+
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,17 +84,12 @@ public class MainActivity extends AppCompatActivity
             final TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
             final ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
 
-            if (user == null) {
-                startActivity(new Intent(this, StartActivity.class));
-                finish();
-                return;
-            } else {
+
 
                 if (user.getPhotoUrl() == null) {
                     databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            ORGANISER organiser = dataSnapshot.getValue(ORGANISER.class);
                             String user_name = dataSnapshot.child("user_name").getValue().toString();
                             String email = dataSnapshot.child("email").getValue().toString();
                             String image = dataSnapshot.child("image").getValue().toString();

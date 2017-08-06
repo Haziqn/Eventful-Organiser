@@ -14,7 +14,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -60,7 +62,7 @@ public class Upload_Event extends AppCompatActivity {
     EditText editTextTitle, editTextDesc, editTextHeadChief, editTextLocation, editTextAddress;
     TextView textViewStartDate, textViewStartTime, textViewEndDate, textViewEndTime, textViewOrganiser;
     Spinner spinner;
-    Button btnSubmit;
+    Button btnSubmit, btnSearch;
     ImageButton imageButton;
 
     FirebaseAuth mAuth;
@@ -71,9 +73,9 @@ public class Upload_Event extends AppCompatActivity {
     final int GALLERY_REQUEST = 1;
     String user_id = "";
 
-    int years = 0;
-    int monthOfYears = 0;
-    int dayOfMonths = 0;
+    int years;
+    int monthOfYears;
+    int dayOfMonths;
     int day;
     int hour;
     int mins;
@@ -127,9 +129,37 @@ public class Upload_Event extends AppCompatActivity {
         user_id = mAuth.getCurrentUser().getUid();
 
         myCalendar = Calendar.getInstance();
+        years = myCalendar.get(Calendar.YEAR);
+        monthOfYears = myCalendar.get(Calendar.MONTH);
+        day = myCalendar.get(Calendar.DAY_OF_MONTH);
 
         imageButton = (ImageButton) findViewById(R.id.ibEvent);
         editTextAddress = (EditText) findViewById(R.id.etAddress);
+        editTextAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Geocoder geocoder = new Geocoder(Upload_Event.this);
+                try {
+                    addressList = geocoder.getFromLocationName(charSequence.toString().trim(), 1);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         editTextDesc = (EditText) findViewById(R.id.etDesc);
         editTextHeadChief = (EditText) findViewById(R.id.etEIC);
         editTextLocation = (EditText) findViewById(R.id.etLocation);
@@ -140,6 +170,7 @@ public class Upload_Event extends AppCompatActivity {
         textViewStartDate = (TextView) findViewById(R.id.tvStartDate);
         textViewStartTime = (TextView) findViewById(R.id.tvStartTime);
         textViewOrganiser = (TextView) findViewById(R.id.tvOrganiser);
+        btnSearch = (Button)findViewById(R.id.searchButton);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         myCalendar.add(Calendar.DATE, 7); // number of days to add
@@ -171,6 +202,8 @@ public class Upload_Event extends AppCompatActivity {
 
         textViewOrganiser.setText("By " + organiser_name);
 
+
+
         textViewStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,14 +213,12 @@ public class Upload_Event extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                years = year;
-                                monthOfYears = monthOfYear;
-                                dayOfMonths = dayOfMonth;
-                                message += day + " " + monthOfYears + " " + year;
-                                java.util.Calendar calendar = java.util.Calendar.getInstance();
-                                calendar.set(years, monthOfYears, day, hour, mins);
 
+                                message += dayOfMonth + "/" + monthOfYear + "/" + year;
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(years, monthOfYears, day, hour, mins);
                                 textViewStartDate.setText(message);
+                                message = "";
                             }
                         }, years, monthOfYears, day);
 
@@ -204,14 +235,12 @@ public class Upload_Event extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                years = year;
-                                monthOfYears = monthOfYear;
-                                dayOfMonths = dayOfMonth;
-                                message += day + " " + monthOfYears + " " + year;
-                                java.util.Calendar calendar = java.util.Calendar.getInstance();
-                                calendar.set(years, monthOfYears, day, hour, mins);
 
+                                message += dayOfMonth + "/" + monthOfYear + "/" + year;
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(years, monthOfYears, day, hour, mins);
                                 textViewEndDate.setText(message);
+                                message = "";
                             }
                         }, years, monthOfYears, day);
 
@@ -222,8 +251,8 @@ public class Upload_Event extends AppCompatActivity {
         textViewStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int hours = myCalendar.get(java.util.Calendar.HOUR_OF_DAY);
-                int minutes = myCalendar.get(java.util.Calendar.MINUTE);
+                int hours = myCalendar.get(Calendar.HOUR_OF_DAY);
+                int minutes = myCalendar.get(Calendar.MINUTE);
 
                 TimePickerDialog timePickerDialog = new TimePickerDialog(Upload_Event.this,
                         new TimePickerDialog.OnTimeSetListener() {
@@ -235,6 +264,7 @@ public class Upload_Event extends AppCompatActivity {
                                 hour = hourOfDay;
                                 mins = minute;
                                 textViewStartTime.setText(message);
+                                message = "";
                             }
                         }, hours, minutes, false);
                 timePickerDialog.show();
@@ -257,6 +287,7 @@ public class Upload_Event extends AppCompatActivity {
                                 hour = hourOfDay;
                                 mins = minute;
                                 textViewEndTime.setText(message);
+                                message = "";
                             }
                         }, hours, minutes, false);
                 timePickerDialog.show();
@@ -285,7 +316,25 @@ public class Upload_Event extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startPosting();
+                final String title = editTextTitle.getText().toString().trim();
+                final String description = editTextDesc.getText().toString().trim();
+                final String location = editTextLocation.getText().toString().trim();
+                final String event_in_Charge = editTextHeadChief.getText().toString().trim();
+                final String address = editTextAddress.getText().toString().trim();
+
+                if (TextUtils.isEmpty(title)) {
+                    editTextTitle.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(description)){
+                    editTextDesc.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(location)){
+                    editTextLocation.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(address)){
+                    editTextAddress.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(event_in_Charge)){
+                    editTextHeadChief.setError("Field should not be empty.");
+                } else {
+                    startPosting();
+                }
             }
 
         });
@@ -310,19 +359,22 @@ public class Upload_Event extends AppCompatActivity {
 
         String location = editTextAddress.getText().toString();
 
+        if (TextUtils.isEmpty(location)) {
+            editTextAddress.setError("Please input an address.");
+        } else {
+            if (location != null || !location.equals("")) {
+                Geocoder geocoder = new Geocoder(this);
+                try {
+                    addressList = geocoder.getFromLocationName(location, 1);
 
-        if (location != null || !location.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
-
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
             }
-            Address address = addressList.get(0);
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-            map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
         }
     }
 

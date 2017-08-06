@@ -22,9 +22,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class Home extends Fragment {
-    public static TabLayout tabLayout;
     public static ViewPager viewPager;
-    public static int int_items = 2;
+    public static int int_items = 1;
 
     private OnFragmentInteractionListener mListener;
 
@@ -49,16 +48,8 @@ public class Home extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View x =  inflater.inflate(R.layout.fragment_home,null);
-        tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
-
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(viewPager);
-            }
-        });
 
         getActivity().setTitle("Home");
 
@@ -76,7 +67,6 @@ public class Home extends Fragment {
         {
             switch (position){
                 case 0 : return new liveFragment();
-                case 1 : return new pastFragment();
             }
             return null;
         }
@@ -88,17 +78,6 @@ public class Home extends Fragment {
 
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-
-            switch (position){
-                case 0 :
-                    return "Live";
-                case 1 :
-                    return "Past";
-            }
-            return null;
-        }
 
     }
 
