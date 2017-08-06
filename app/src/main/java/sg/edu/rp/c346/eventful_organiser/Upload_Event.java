@@ -14,7 +14,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -133,6 +135,31 @@ public class Upload_Event extends AppCompatActivity {
 
         imageButton = (ImageButton) findViewById(R.id.ibEvent);
         editTextAddress = (EditText) findViewById(R.id.etAddress);
+        editTextAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Geocoder geocoder = new Geocoder(Upload_Event.this);
+                try {
+                    addressList = geocoder.getFromLocationName(charSequence.toString().trim(), 1);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         editTextDesc = (EditText) findViewById(R.id.etDesc);
         editTextHeadChief = (EditText) findViewById(R.id.etEIC);
         editTextLocation = (EditText) findViewById(R.id.etLocation);

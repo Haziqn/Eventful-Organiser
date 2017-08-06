@@ -14,7 +14,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -64,7 +66,8 @@ public class UpdateEvent extends AppCompatActivity {
     ImageButton imageButton;
 
     FirebaseAuth mAuth;
-    DatabaseReference database, mDatabase, mDatabaseOrganiser;
+    DatabaseReference mDatabase;
+    DatabaseReference mDatabaseOrganiser;
     StorageReference Storage;
     private Uri uri = null;
     final int GALLERY_REQUEST = 1;
@@ -81,18 +84,22 @@ public class UpdateEvent extends AppCompatActivity {
     String type;
     String organiser_name;
 
-    String itemKey;
-
     private GoogleMap map;
 
     List<Address> addressList = null;
 
     ProgressDialog Progress;
 
+    String image;
+    String itemKey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload__event);
+        setContentView(R.layout.activity_update_event);
+
+        Intent i = getIntent();
+        itemKey = i.getStringExtra("updateKey");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -122,9 +129,8 @@ public class UpdateEvent extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance().getReference();
-        mDatabase = database.child("EVENT");
-        mDatabaseOrganiser = database.child("ORGANISER");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
+        mDatabaseOrganiser = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
         Storage = FirebaseStorage.getInstance().getReference();
         user_id = mAuth.getCurrentUser().getUid();
 
@@ -135,6 +141,31 @@ public class UpdateEvent extends AppCompatActivity {
 
         imageButton = (ImageButton) findViewById(R.id.ibEvent);
         editTextAddress = (EditText) findViewById(R.id.etAddress);
+        editTextAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Geocoder geocoder = new Geocoder(UpdateEvent.this);
+                try {
+                    addressList = geocoder.getFromLocationName(charSequence.toString().trim(), 1);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         editTextDesc = (EditText) findViewById(R.id.etDesc);
         editTextHeadChief = (EditText) findViewById(R.id.etEIC);
         editTextLocation = (EditText) findViewById(R.id.etLocation);
@@ -146,31 +177,13 @@ public class UpdateEvent extends AppCompatActivity {
         textViewStartTime = (TextView) findViewById(R.id.tvStartTime);
         textViewOrganiser = (TextView) findViewById(R.id.tvOrganiser);
 
-        Intent i = getIntent();
-        itemKey = i.getStringExtra("updateKey");
-        Toast.makeText(UpdateEvent.this, itemKey, Toast.LENGTH_LONG).show();
-
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
-        databaseReference.child(user_id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String user_name = dataSnapshot.child("user_name").getValue().toString();
-                textViewOrganiser.setText(user_name);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
         DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                String image = dataSnapshot.child("image").getValue().toString();
+                EVENT event = dataSnapshot.getValue(EVENT.class);
+                image = dataSnapshot.child("image").getValue().toString();
                 String title = dataSnapshot.child("title").getValue().toString();
                 String startDate = dataSnapshot.child("startDate").getValue().toString();
                 String startTime = dataSnapshot.child("startTime").getValue().toString();
@@ -179,8 +192,7 @@ public class UpdateEvent extends AppCompatActivity {
                 final String address = dataSnapshot.child("location").getValue().toString();
                 String desc = dataSnapshot.child("description").getValue().toString();
                 String headChief = dataSnapshot.child("head_chief").getValue().toString();
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setTitle(title);
+
                 Picasso.with(getBaseContext()).load(image).into(imageButton);
                 editTextTitle.setText(title);
                 textViewStartDate.setText(startDate);
@@ -198,21 +210,6 @@ public class UpdateEvent extends AppCompatActivity {
 
             }
         });
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        myCalendar.add(Calendar.DATE, 7); // number of days to add
-        String advancedDate = sdf.format(myCalendar.getTime());
-
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 8);
-        String newDate = sdf.format(c.getTime());
-        SimpleDateFormat stf = new SimpleDateFormat("HH:mm");
-        String currentTime = stf.format(myCalendar.getTime());
-
-        textViewStartDate.setText(advancedDate);
-        textViewStartTime.setText(currentTime);
-        textViewEndDate.setText(newDate);
-        textViewEndTime.setText(currentTime);
 
         mDatabaseOrganiser.child(user_id).addValueEventListener(new ValueEventListener() {
             @Override
@@ -336,7 +333,7 @@ public class UpdateEvent extends AppCompatActivity {
             }
         });
 
-        btnSubmit = (Button)findViewById(R.id.submitbutton);
+        btnSubmit = (Button)findViewById(R.id.updatebutton);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -357,33 +354,14 @@ public class UpdateEvent extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Create an Event");
+        getSupportActionBar().setTitle("Update Event");
 
         Progress = new ProgressDialog(this);
-    }
 
-    public void onMapSearch(View view) {
-
-        String location = editTextAddress.getText().toString();
-
-
-        if (location != null || !location.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Address address = addressList.get(0);
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-            map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
-        }
     }
 
     private void startPosting() {
-        Progress.setMessage("Uploading");
+        Progress.setMessage("Updating");
         Progress.show();
 
         final String title = editTextTitle.getText().toString().trim();
@@ -399,76 +377,82 @@ public class UpdateEvent extends AppCompatActivity {
         final Double lat = address.getLatitude();
         final Double lng = address.getLongitude();
 
+        if (uri != null) {
             StorageReference filepath = Storage.child("Event_Image").child(uri.getLastPathSegment());
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    String downloadUrl = taskSnapshot.getDownloadUrl().toString().trim();
                     EVENT event = new EVENT();
-                    event.setTitle(title);
-                    event.setStartTime(startTime);
-                    event.setStartDate(startDate);
-                    event.setEndDate(endDate);
-                    event.setEndTime(endTime);
-                    event.setLat(lat);
-                    event.setLng(lng);
-                    event.setLocation(location);
-                    event.setDescription(description);
-                    event.setHead_chief(event_in_Charge);
-                    event.setOrganiser(organiser);
-                    event.setTimeStamp(getCurrentTimeStamp());
-                    event.setStatus("active");
-                    event.setImage(downloadUrl);
-                    event.setEventType(type);
-
                     Map map = new HashMap();
-                    map.put("EVENT/" + itemKey, event);
-
-                    database.updateChildren(map);
-
-                    mDatabase.push().setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-
-                            if (task.isSuccessful()) {
-
-                                Progress.dismiss();
-                                Intent intent = new Intent(UpdateEvent.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-
-                            } else {
-                                Toast.makeText(UpdateEvent.this, task.getException().toString().trim(), Toast.LENGTH_LONG);
-                            }
-                        }
-                    });
+                    map.put("EVENT/" + itemKey + "/image", event);
+                    String downloadUrl = taskSnapshot.getDownloadUrl().toString().trim();
+                    event.setImage(downloadUrl);
                 }
+
             });
-
-            Progress.dismiss(); //loading bar
-            finish();
         }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+                EVENT event = new EVENT();
+                event.setTitle(title);
+                event.setStartTime(startTime);
+                event.setStartDate(startDate);
+                event.setEndDate(endDate);
+                event.setEndTime(endTime);
+                event.setLat(lat);
+                event.setLng(lng);
+                event.setLocation(location);
+                event.setDescription(description);
+                event.setHead_chief(event_in_Charge);
+                event.setOrganiser(organiser);
+                event.setTimeStamp(getCurrentTimeStamp());
+                event.setStatus("active");
+                event.setEventType(type);
+        event.setImage(image);
+
+                Map map = new HashMap();
+                map.put("EVENT/" + itemKey, event);
+
+                FirebaseDatabase.getInstance().getReference().updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+
+                            Progress.dismiss();
+                            Intent intent = new Intent(UpdateEvent.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+
+                        } else {
+                            Toast.makeText(UpdateEvent.this, task.getException().toString().trim(), Toast.LENGTH_LONG);
+                        }
+                    }
+                });
+
+
+        Progress.dismiss(); //loading bar
+        finish();
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-
-            uri = data.getData();
-
-            imageButton.setImageURI(uri);
-        }
-    }
+//    public void onMapSearch(View view) {
+//
+//        String location = editTextAddress.getText().toString();
+//
+//
+//        if (location != null || !location.equals("")) {
+//            Geocoder geocoder = new Geocoder(this);
+//            try {
+//                addressList = geocoder.getFromLocationName(location, 1);
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            Address address = addressList.get(0);
+//            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+//            map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+//            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+//        }
+//    }
 
     public static String getCurrentTimeStamp(){
         try {
@@ -483,5 +467,17 @@ public class UpdateEvent extends AppCompatActivity {
             return null;
         }
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+
+            uri = data.getData();
+
+            imageButton.setImageURI(uri);
+        }
+    }
+
 
 }
