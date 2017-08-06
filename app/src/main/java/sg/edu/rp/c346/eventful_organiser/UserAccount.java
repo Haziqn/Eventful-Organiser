@@ -9,7 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +33,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.security.SecureRandom;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.spec.SecretKeySpec;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,6 +63,9 @@ public class UserAccount extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_account);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("My Account");
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
@@ -193,24 +204,61 @@ public class UserAccount extends AppCompatActivity {
         final EditText etAcra = (EditText)findViewById(R.id.etAcra);
         final EditText etAddress = (EditText)findViewById(R.id.etAddress);
         final EditText etEmail = (EditText)findViewById(R.id.etEmail);
+        final EditText etPw = (EditText)findViewById(R.id.editTextPw);
+        final EditText etConfirmPw = (EditText)findViewById(R.id.editTextConfirmPw);
 
-        final String name = etName.getText().toString();
-        final String num = etNum.getText().toString();
-        final String site = etSite.getText().toString();
-        final String desc = etDesc.getText().toString();
-        final String acra = etAcra.getText().toString();
-        final String address = etAddress.getText().toString();
-        final String email = etEmail.getText().toString();
+        final String name = etName.getText().toString().trim();
+        final String num = etNum.getText().toString().trim();
+        final String site = etSite.getText().toString().trim();
+        final String desc = etDesc.getText().toString().trim();
+        final String acra = etAcra.getText().toString().trim();
+        final String address = etAddress.getText().toString().trim();
+        final String email = etEmail.getText().toString().trim();
+        final String pw = etPw.getText().toString().trim();
+        final String confirmPw = etConfirmPw.getText().toString().trim();
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = user.getUid();
 
-        mOrganiser.child(uid).child("user_name").setValue(name);
-        mOrganiser.child(uid).child("contact_num").setValue(num);
-        mOrganiser.child(uid).child("site").setValue(site);
-        mOrganiser.child(uid).child("description").setValue(desc);
-        mOrganiser.child(uid).child("acra").setValue(acra);
-        mOrganiser.child(uid).child("address").setValue(address);
-        mOrganiser.child(uid).child("email").setValue(email);
+        if (name != "" || num != "" || site != "" || desc != "" || acra != "" || address != "" || email != "" || pw != "" || confirmPw != "") {
+            if (pw.equals(confirmPw)) {
+
+                String pwDecode = decode_password(confirmPw);
+
+                user.updatePassword(pwDecode)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("UserAccount", "User password updated.");
+                                }
+                            }
+                        });
+
+                user.updateEmail(pwDecode)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("UserAccount", "User email address updated.");
+                                }
+                            }
+                        });
+
+                mOrganiser.child(uid).child("password").setValue(pwDecode);
+                mOrganiser.child(uid).child("user_name").setValue(name);
+                mOrganiser.child(uid).child("contact_num").setValue(num);
+                mOrganiser.child(uid).child("site").setValue(site);
+                mOrganiser.child(uid).child("description").setValue(desc);
+                mOrganiser.child(uid).child("acra").setValue(acra);
+                mOrganiser.child(uid).child("address").setValue(address);
+                mOrganiser.child(uid).child("email").setValue(email);
+            } else {
+                Toast.makeText(UserAccount.this, "Passwords do not match.", Toast.LENGTH_LONG).show();
+            }
+
+        } else {
+            Toast.makeText(UserAccount.this, "One or more fields are empty.", Toast.LENGTH_LONG).show();
+        }
 
 //        StorageReference filepath = Storage.child("User_Image").child(uri.getLastPathSegment());
 //
@@ -222,6 +270,31 @@ public class UserAccount extends AppCompatActivity {
 //                finish();
 //            }
 //        });
+    }
+
+    private String decode_password (String confirmPw) {
+        SecretKeySpec sks = null;
+        try {
+            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+            sr.setSeed("any data used as random seed".getBytes());
+            KeyGenerator kg = KeyGenerator.getInstance("AES");
+            kg.init(128, sr);
+            sks = new SecretKeySpec((kg.generateKey()).getEncoded(), "AES");
+        } catch (Exception e) {
+            Toast.makeText(UserAccount.this, "AES secret key spec error", Toast.LENGTH_LONG).show();
+        }
+
+        // Encode the original data with AES
+        byte[] encodedBytes = null;
+        try {
+            Cipher c = Cipher.getInstance("AES");
+            c.init(Cipher.ENCRYPT_MODE, sks);
+            encodedBytes = c.doFinal(confirmPw.getBytes());
+        } catch (Exception e) {
+            Toast.makeText(UserAccount.this, "AES encryption error", Toast.LENGTH_LONG).show();
+        }
+
+        return Base64.encodeToString(encodedBytes, Base64.DEFAULT);
     }
 
     public void userDelete() {
@@ -241,8 +314,6 @@ public class UserAccount extends AppCompatActivity {
                 });
     }
 
-
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -252,5 +323,15 @@ public class UserAccount extends AppCompatActivity {
 
             imageButton.setImageURI(uri);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

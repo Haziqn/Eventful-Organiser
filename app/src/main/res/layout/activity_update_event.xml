@@ -373,7 +373,7 @@
                 android:background="@color/colorPrimary"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="Create Event"
+                android:text="Upload Event"
                 android:textColor="@color/cardview_light_background" />
 
         </LinearLayout>
