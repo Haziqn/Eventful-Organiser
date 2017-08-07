@@ -50,6 +50,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -66,7 +67,6 @@ public class SignUp extends AppCompatActivity {
             editTextACRA,
             editTextNumber,
             editTextEmail,
-
             editTextWebsite,
             editTextAddress,
             editTextDescription,
@@ -288,7 +288,7 @@ public class SignUp extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(SignUp.this, "debug", Toast.LENGTH_SHORT).show();
+
 
                                     ORGANISER organiser = new ORGANISER();
 
@@ -328,7 +328,7 @@ public class SignUp extends AppCompatActivity {
                                     try {
                                         throw task.getException();
                                     } catch (FirebaseAuthWeakPasswordException e){
-                                        error = "Weak password";
+                                        error = "Requires at least 1 capital letter, 1 special character, 1 number and at least 6 characters!";
                                     } catch (FirebaseAuthInvalidCredentialsException e){
                                         error = "Invalid email";
                                     } catch (FirebaseAuthUserCollisionException e) {
@@ -402,16 +402,14 @@ public class SignUp extends AppCompatActivity {
             uri = data.getData();
 
             circleImageView.setImageURI(uri);
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode == RESULT_OK) {
+                uri = result.getUri();
+            }
+            else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -37,7 +37,6 @@
         <activity android:name=".UserAccount" />
         <activity android:name=".UpdateEvent" />
         <activity android:name=".StartActivity" />
-        <activity android:name=".ChangePassword"></activity>
     </application>
 
 </manifest>

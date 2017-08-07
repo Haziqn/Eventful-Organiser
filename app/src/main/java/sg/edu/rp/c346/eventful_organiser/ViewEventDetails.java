@@ -1,9 +1,7 @@
 package sg.edu.rp.c346.eventful_organiser;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -15,8 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,9 +33,6 @@ public class ViewEventDetails extends AppCompatActivity {
 
     Button btnUpdate;
     ImageView imageView, ivEmail;
-    String organiserID;
-    String organiser;
-    DatabaseReference mDatabaseRefOrganiser;
     FirebaseAuth mAuth;
     private GoogleMap map;
     TextView tvTitle, tvOrganiser, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvAddress, tvDesc, tvHeadChief;
@@ -57,7 +50,7 @@ public class ViewEventDetails extends AppCompatActivity {
         final DatabaseReference mDatabaseOrganiser = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        btnUpdate = (Button)findViewById(R.id.btnUpdate);
+        btnUpdate = (Button)findViewById(R.id.btnUp);
         imageView = (ImageView)findViewById(R.id.ivEvent) ;
         tvTitle = (TextView)findViewById(R.id.tvTitle);
         tvOrganiser = (TextView)findViewById(R.id.tvOrganiser);
