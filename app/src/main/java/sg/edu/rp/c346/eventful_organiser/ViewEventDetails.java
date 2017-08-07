@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.robertsimoes.shareable.Shareable;
 import com.squareup.picasso.Picasso;
 
 public class ViewEventDetails extends AppCompatActivity {
@@ -42,6 +43,7 @@ public class ViewEventDetails extends AppCompatActivity {
     FirebaseAuth mAuth;
     private GoogleMap map;
     TextView tvTitle, tvOrganiser, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvAddress, tvDesc, tvHeadChief;
+    String itemKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class ViewEventDetails extends AppCompatActivity {
         ivEmail = (ImageView)findViewById(R.id.imageEmail);
 
         Intent i = getIntent();
-        final String itemKey = i.getStringExtra("key");
+        itemKey = i.getStringExtra("key");
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
         databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
@@ -183,11 +185,46 @@ public class ViewEventDetails extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
+        }
+
+        int id = item.getItemId();
+        if (id == R.id.action_share) {
+
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
+            DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
+            mDatabaseRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    EVENT event = dataSnapshot.getValue(EVENT.class);
+                    String title = dataSnapshot.child("title").getValue().toString();
+
+                    Shareable shareAction = new Shareable.Builder(ViewEventDetails.this)
+                            .message("Sign up for my event " + title + " on Eventful now!")
+                            .url("https://drive.google.com/open?id=0B1mWK9sVsyOoZ2FEWnVON3ZLWEk")
+                            .socialChannel(Shareable.Builder.FACEBOOK)
+                            .build();
+                    shareAction.share();
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

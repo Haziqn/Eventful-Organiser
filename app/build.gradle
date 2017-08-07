@@ -57,6 +57,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.2.1'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
     testCompile 'junit:junit:4.12'
+    compile 'com.github.robertsimoes:Shareable:0.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
