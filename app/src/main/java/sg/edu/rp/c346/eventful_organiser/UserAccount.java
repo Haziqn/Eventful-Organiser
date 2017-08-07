@@ -22,6 +22,8 @@ import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,8 +48,7 @@ import static sg.edu.rp.c346.eventful_organiser.SignIn.MY_PREFS_NAME;
 
 public class UserAccount extends AppCompatActivity {
 
-    EditText editName, editEmail, editPassword;
-    Button btnUpdate, btnDelete, btnResetPassword;
+    Button btnUpdate, btnChange;
     ImageButton imageButton;
 
     FirebaseAuth mAuth;
@@ -75,6 +76,7 @@ public class UserAccount extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
 
         btnUpdate = (Button)findViewById(R.id.btnUpdate);
+        btnChange = (Button)findViewById(R.id.btnChange);
 
         final EditText etName = (EditText)findViewById(R.id.etName);
         final EditText etNum = (EditText)findViewById(R.id.etNum);
@@ -83,7 +85,10 @@ public class UserAccount extends AppCompatActivity {
         final EditText etAcra = (EditText)findViewById(R.id.etAcra);
         final EditText etAddress = (EditText)findViewById(R.id.etAddress);
         final EditText etEmail = (EditText)findViewById(R.id.etEmail);
+        final EditText etPassword = (EditText)findViewById(R.id.etPassword);
         final CircleImageView imageButton = (CircleImageView) findViewById(R.id.imageButtonUser);
+
+        etPassword.setClickable(false);
 
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = user.getUid();
@@ -137,32 +142,6 @@ public class UserAccount extends AppCompatActivity {
             }
         });
 //
-//        buttonDelete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                AlertDialog.Builder myBuilder = new AlertDialog.Builder(UserAccount.this);
-//
-//                myBuilder.setTitle("Delete Account");
-//                myBuilder.setMessage("Are you sure?");
-//                myBuilder.setCancelable(false);
-//                myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        userDelete();
-//                        Intent i = new Intent(UserAccount.this, SignUp.class);
-//                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        startActivity(i);
-//
-//                    }
-//                });
-//                myBuilder.setNegativeButton("Cancel", null);
-//
-//                AlertDialog myDialog = myBuilder.create();
-//                myDialog.show();
-//
-//            }
-//        });
-//
 //        imageButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -172,27 +151,14 @@ public class UserAccount extends AppCompatActivity {
 //            }
 //        });
 //
-//        buttonResetPassword.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                AlertDialog.Builder myBuilder = new AlertDialog.Builder(UserAccount.this);
-//
-//                myBuilder.setTitle("Reset Password");
-//                myBuilder.setMessage("A reset password email will be sent to you");
-//                myBuilder.setCancelable(false);
-//                myBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        mAuth.sendPasswordResetEmail(user.getEmail());
-//                    }
-//                });
-//                myBuilder.setNegativeButton("Cancel", null);
-//
-//                AlertDialog myDialog = myBuilder.create();
-//                myDialog.show();
-//
-//            }
-//        });
+        btnChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserAccount.this, ChangePassword.class);
+                startActivity(intent);
+
+            }
+        });
     }
 
     public void updateUserInfo() {
