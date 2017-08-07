@@ -3,6 +3,7 @@ package sg.edu.rp.c346.eventful_organiser;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
@@ -12,11 +13,14 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +44,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,6 +54,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.robertsimoes.shareable.Shareable;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -66,8 +73,7 @@ public class UpdateEvent extends AppCompatActivity {
     ImageButton imageButton;
 
     FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
-    DatabaseReference mDatabaseOrganiser;
+    DatabaseReference mDatabase, mDatabaseOrganiser, databaseReference;
     StorageReference Storage;
     private Uri uri = null;
     final int GALLERY_REQUEST = 1;
@@ -92,6 +98,8 @@ public class UpdateEvent extends AppCompatActivity {
 
     String image;
     String itemKey;
+
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,10 +137,12 @@ public class UpdateEvent extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
-        mDatabaseOrganiser = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
+        user = mAuth.getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        mDatabase = databaseReference.child("EVENT");
+        mDatabaseOrganiser = databaseReference.child("ORGANISER");
         Storage = FirebaseStorage.getInstance().getReference();
-        user_id = mAuth.getCurrentUser().getUid();
+        user_id = user.getUid();
 
         myCalendar = Calendar.getInstance();
         years = myCalendar.get(Calendar.YEAR);
@@ -500,14 +510,89 @@ public class UpdateEvent extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                finish();
+//                return true;
+//        }
+//
+//        int id = item.getItemId();
+//        if (id == R.id.action_share) {
+//
+//            AlertDialog.Builder myBuilder = new AlertDialog.Builder(UpdateEvent.this);
+//
+//            myBuilder.setTitle("Delete Account");
+//            myBuilder.setMessage("Are you sure?");
+//            myBuilder.setCancelable(false);
+//            myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    databaseReference.child("EVENT_PARTICIPANTS").child(user_id).child(itemKey).addChildEventListener(new ChildEventListener() {
+//                        @Override
+//                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                            if(dataSnapshot.hasChildren()) {
+//                                Toast.makeText(UpdateEvent.this, "You have currently joined events! Please leave all current events.", Toast.LENGTH_LONG).show();
+//                            } else {
+//
+//                                final DatabaseReference current_user_db = mDatabase.child(user_id);
+//                                current_user_db.child("status").setValue("deactivated").addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<Void> task) {
+//                                        user.delete()
+//                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                    @Override
+//                                                    public void onComplete(@NonNull Task<Void> task) {
+//                                                        if (task.isSuccessful()) {
+//                                                            Log.d("EditProfile", "User account deleted.");
+//                                                        }
+//                                                    }
+//                                                });
+//                                        Intent i = new Intent(UpdateEvent.this, StartActivity.class);
+//                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                        startActivity(i);
+//                                    }
+//                                });
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//
+//                }
+//            });
+//            myBuilder.setNegativeButton("Cancel", null);
+//
+//            AlertDialog myDialog = myBuilder.create();
+//            myDialog.show();
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
 }

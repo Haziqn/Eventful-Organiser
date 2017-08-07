@@ -194,28 +194,10 @@ public class ViewEventDetails extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_share) {
 
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
-            DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
-            mDatabaseRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    EVENT event = dataSnapshot.getValue(EVENT.class);
-                    String title = dataSnapshot.child("title").getValue().toString();
+            Intent i = new Intent(ViewEventDetails.this, ViewEventParticipants.class);
+            i.putExtra("key", itemKey);
 
-                    Shareable shareAction = new Shareable.Builder(ViewEventDetails.this)
-                            .message("Sign up for my event " + title + " on Eventful now!")
-                            .url("https://drive.google.com/open?id=0B1mWK9sVsyOoZ2FEWnVON3ZLWEk")
-                            .socialChannel(Shareable.Builder.FACEBOOK)
-                            .build();
-                    shareAction.share();
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+            startActivity(i);
 
             return true;
         }
