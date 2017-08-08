@@ -37,7 +37,8 @@
         <activity android:name=".UserAccount" />
         <activity android:name=".UpdateEvent" />
         <activity android:name=".StartActivity" />
-        <activity android:name=".ViewEventParticipants"></activity>
+        <activity android:name=".ViewEventParticipants" />
+        <activity android:name=".TakeAttendance"></activity>
     </application>
 
 </manifest>

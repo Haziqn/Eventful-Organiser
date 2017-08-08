@@ -6,4 +6,10 @@
         android:orderInCategory="100"
         android:title="Delete Account"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_res_pass"
+        android:orderInCategory="100"
+        android:title="Reset Password"
+        app:showAsAction="never" />
 </menu>

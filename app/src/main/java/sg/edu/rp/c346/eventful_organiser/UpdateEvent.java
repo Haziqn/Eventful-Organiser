@@ -510,89 +510,89 @@ public class UpdateEvent extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                finish();
-//                return true;
-//        }
-//
-//        int id = item.getItemId();
-//        if (id == R.id.action_share) {
-//
-//            AlertDialog.Builder myBuilder = new AlertDialog.Builder(UpdateEvent.this);
-//
-//            myBuilder.setTitle("Delete Account");
-//            myBuilder.setMessage("Are you sure?");
-//            myBuilder.setCancelable(false);
-//            myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    databaseReference.child("EVENT_PARTICIPANTS").child(user_id).child(itemKey).addChildEventListener(new ChildEventListener() {
-//                        @Override
-//                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                            if(dataSnapshot.hasChildren()) {
-//                                Toast.makeText(UpdateEvent.this, "You have currently joined events! Please leave all current events.", Toast.LENGTH_LONG).show();
-//                            } else {
-//
-//                                final DatabaseReference current_user_db = mDatabase.child(user_id);
-//                                current_user_db.child("status").setValue("deactivated").addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<Void> task) {
-//                                        user.delete()
-//                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                    @Override
-//                                                    public void onComplete(@NonNull Task<Void> task) {
-//                                                        if (task.isSuccessful()) {
-//                                                            Log.d("EditProfile", "User account deleted.");
-//                                                        }
-//                                                    }
-//                                                });
-//                                        Intent i = new Intent(UpdateEvent.this, StartActivity.class);
-//                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                        startActivity(i);
-//                                    }
-//                                });
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(DatabaseError databaseError) {
-//
-//                        }
-//                    });
-//
-//                }
-//            });
-//            myBuilder.setNegativeButton("Cancel", null);
-//
-//            AlertDialog myDialog = myBuilder.create();
-//            myDialog.show();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        int id = item.getItemId();
+        if (id == R.id.action_share) {
+
+            AlertDialog.Builder myBuilder = new AlertDialog.Builder(UpdateEvent.this);
+
+            myBuilder.setTitle("Delete Account");
+            myBuilder.setMessage("Are you sure?");
+            myBuilder.setCancelable(false);
+            myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    databaseReference.child("EVENT_PARTICIPANTS").child(user_id).addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                            if(dataSnapshot.hasChildren()) {
+                                Toast.makeText(UpdateEvent.this, "You have currently joined events! Please leave all current events.", Toast.LENGTH_LONG).show();
+                            } else {
+
+                                final DatabaseReference current_user_db = mDatabase.child(user_id);
+                                current_user_db.child("status").setValue("deactivated").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        user.delete()
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Log.d("EditProfile", "User account deleted.");
+                                                        }
+                                                    }
+                                                });
+                                        Intent i = new Intent(UpdateEvent.this, StartActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(i);
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            });
+            myBuilder.setNegativeButton("Cancel", null);
+
+            AlertDialog myDialog = myBuilder.create();
+            myDialog.show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

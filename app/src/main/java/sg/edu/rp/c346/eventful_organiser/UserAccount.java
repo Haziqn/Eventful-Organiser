@@ -252,7 +252,28 @@ public class UserAccount extends AppCompatActivity {
         }
 
         int id = item.getItemId();
-        if (id == R.id.action_share) {
+
+        if (id == R.id.action_delete) {
+            AlertDialog.Builder myBuilder = new AlertDialog.Builder(UserAccount.this);
+
+            myBuilder.setTitle("Reset Password");
+            myBuilder.setMessage("An email will be sent to you!");
+            myBuilder.setCancelable(false);
+            myBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    mAuth.sendPasswordResetEmail(user.getEmail());
+                }
+            });
+            myBuilder.setNegativeButton("Cancel", null);
+
+            AlertDialog myDialog = myBuilder.create();
+            myDialog.show();
+        }
+
+        if (id == R.id.action_delete) {
 
             AlertDialog.Builder myBuilder = new AlertDialog.Builder(UserAccount.this);
 
