@@ -65,8 +65,38 @@ public class MainActivity extends AppCompatActivity
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, Upload_Event.class);
-                    startActivity(intent);
+                    if (user.getUid() != "") {
+                        if (user.isEmailVerified()) {
+                            Intent intent = new Intent(MainActivity.this, Upload_Event.class);
+                            startActivity(intent);
+                        } else {
+                            AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
+
+                            myBuilder.setTitle("Your email is not verified!");
+                            myBuilder.setMessage("Please verify your email");
+                            myBuilder.setCancelable(false);
+                            myBuilder.setPositiveButton("Send Email", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    user.sendEmailVerification()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d("ViewEventDetails", "Verification Email successfully sent.");
+                                                    }
+                                                }
+                                            });
+
+                                }
+                            });
+                            myBuilder.setNegativeButton("Cancel", null);
+
+                            AlertDialog myDialog = myBuilder.create();
+                            myDialog.show();
+                        }
+                    }
                 }
             });
 
