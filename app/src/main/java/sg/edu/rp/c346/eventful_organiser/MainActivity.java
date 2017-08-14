@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
                             Intent intent = new Intent(MainActivity.this, Upload_Event.class);
                             startActivity(intent);
                         } else {
-                            AlertDialog.Builder myBuilder = new AlertDialog.Builder(getBaseContext());
+                            AlertDialog.Builder myBuilder = new AlertDialog.Builder(MainActivity.this);
 
                             myBuilder.setTitle("Your email is not verified!");
                             myBuilder.setMessage("Please verify your email");
