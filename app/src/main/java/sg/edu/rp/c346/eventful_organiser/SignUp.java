@@ -87,7 +87,7 @@ public class SignUp extends AppCompatActivity {
     ProgressDialog mProgress;
 
     String name = "";
-    String acra  = "";
+    String acra = "";
     String contact_number = "";
     Integer cumn;
     String email = "";
@@ -141,12 +141,12 @@ public class SignUp extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
 
         editTextName = (EditText) findViewById(R.id.etTitle);
-        editTextACRA = (EditText)findViewById(R.id.etACRA);
-        editTextNumber = (EditText)findViewById(R.id.etContact);
+        editTextACRA = (EditText) findViewById(R.id.etACRA);
+        editTextNumber = (EditText) findViewById(R.id.etContact);
         editTextEmail = (EditText) findViewById(R.id.etEmailLogin);
-        editTextWebsite = (EditText)findViewById(R.id.etSite);
-        editTextAddress = (EditText)findViewById(R.id.etAddress);
-        editTextDescription = (EditText)findViewById(R.id.etDescription);
+        editTextWebsite = (EditText) findViewById(R.id.etSite);
+        editTextAddress = (EditText) findViewById(R.id.etAddress);
+        editTextDescription = (EditText) findViewById(R.id.etDescription);
         editTextPassword = (EditText) findViewById(R.id.etPwLogin);
         editTextConfirmPassword = (EditText) findViewById(R.id.etPwLogin2);
         circleImageView = (CircleImageView) findViewById(R.id.imageButtonUser);
@@ -257,95 +257,95 @@ public class SignUp extends AppCompatActivity {
                 uri != null) {
             startRegister();
             return true;
-        }  else {
+        } else {
 
-        Toast.makeText(SignUp.this, "A field is empty or passwords do not match. Please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUp.this, "A field is empty or passwords do not match. Please try again", Toast.LENGTH_SHORT).show();
             return false;
         }
     }
 
     private void startRegister() {
-            mProgress.setTitle("Setting Up Account");
-            mProgress.setMessage("Please while we create your account!");
-            mProgress.show();
+        mProgress.setTitle("Setting Up Account");
+        mProgress.setMessage("Please while we create your account!");
+        mProgress.show();
 
-            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
 
-                        final String decodePassword = decode_password(password);
+                    final String decodePassword = decode_password(password);
 
-                        final Address addressMap = addressList.get(0);
-                        final Double lat = addressMap.getLatitude();
-                        final Double lng = addressMap.getLongitude();
+                    final Address addressMap = addressList.get(0);
+                    final Double lat = addressMap.getLatitude();
+                    final Double lng = addressMap.getLongitude();
 
-                        String user_id = mAuth.getCurrentUser().getUid();
-                        final DatabaseReference current_user_db = mDatabase.child(user_id);
-                        StorageReference filepath = Storage.child("User_Image").child(uri.getLastPathSegment());
-                        filepath.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                if (task.isSuccessful()) {
+                    String user_id = mAuth.getCurrentUser().getUid();
+                    final DatabaseReference current_user_db = mDatabase.child(user_id);
+                    StorageReference filepath = Storage.child("User_Image").child(uri.getLastPathSegment());
+                    filepath.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
 
 
-                                    ORGANISER organiser = new ORGANISER();
+                                ORGANISER organiser = new ORGANISER();
 
-                                    organiser.setEmail(email);
-                                    organiser.setContact_num(Integer.parseInt(contact_number));
-                                    organiser.setPassword(decodePassword);
-                                    organiser.setStatus("active");
-                                    organiser.setUser_name(name);
-                                    organiser.setSite(website);
-                                    organiser.setBusiness_type(type);
-                                    organiser.setAcra(acra);
-                                    organiser.setDescription(description);
-                                    organiser.setAddress(address);
-                                    organiser.setContact_num(cumn);
-                                    organiser.setLat(lat);
-                                    organiser.setLng(lng);
-                                    downloadUrl = task.getResult().getDownloadUrl().toString();
-                                    organiser.setImage(downloadUrl);
-                                    current_user_db.setValue(organiser).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
+                                organiser.setEmail(email);
+                                organiser.setContact_num(Integer.parseInt(contact_number));
+                                organiser.setPassword(decodePassword);
+                                organiser.setStatus("active");
+                                organiser.setUser_name(name);
+                                organiser.setSite(website);
+                                organiser.setBusiness_type(type);
+                                organiser.setAcra(acra);
+                                organiser.setDescription(description);
+                                organiser.setAddress(address);
+                                organiser.setContact_num(cumn);
+                                organiser.setLat(lat);
+                                organiser.setLng(lng);
+                                downloadUrl = task.getResult().getDownloadUrl().toString();
+                                organiser.setImage(downloadUrl);
+                                current_user_db.setValue(organiser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                            if (task.isSuccessful()) {
+                                        if (task.isSuccessful()) {
 
-                                                mProgress.dismiss();
-                                                Intent intent = new Intent(SignUp.this, MainActivity.class);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                startActivity(intent);
+                                            mProgress.dismiss();
+                                            Intent intent = new Intent(SignUp.this, MainActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
 
-                                            } else {
-                                                Toast.makeText(SignUp.this, task.getException().toString().trim(), Toast.LENGTH_LONG);
-                                            }
+                                        } else {
+                                            Toast.makeText(SignUp.this, task.getException().toString().trim(), Toast.LENGTH_LONG);
                                         }
-                                    });
-                                } else {
-                                    String error = "";
-                                    try {
-                                        throw task.getException();
-                                    } catch (FirebaseAuthWeakPasswordException e){
-                                        error = "Requires at least 1 capital letter, 1 special character, 1 number and at least 6 characters!";
-                                    } catch (FirebaseAuthInvalidCredentialsException e){
-                                        error = "Invalid email";
-                                    } catch (FirebaseAuthUserCollisionException e) {
-                                        error = "Email already exists";
-                                    } catch (Exception e) {
-                                        error = "Unknown error";
                                     }
-                                    Toast.makeText(SignUp.this, error, Toast.LENGTH_SHORT).show();
+                                });
+                            } else {
+                                String error = "";
+                                try {
+                                    throw task.getException();
+                                } catch (FirebaseAuthWeakPasswordException e) {
+                                    error = "Requires at least 1 capital letter, 1 special character, 1 number and at least 6 characters!";
+                                } catch (FirebaseAuthInvalidCredentialsException e) {
+                                    error = "Invalid email";
+                                } catch (FirebaseAuthUserCollisionException e) {
+                                    error = "Email already exists";
+                                } catch (Exception e) {
+                                    error = "Unknown error";
                                 }
+                                Toast.makeText(SignUp.this, error, Toast.LENGTH_SHORT).show();
                             }
+                        }
 
-                        });
+                    });
 
-                    }
                 }
+            }
 
-            });
+        });
 
     }
 
@@ -419,12 +419,21 @@ public class SignUp extends AppCompatActivity {
             circleImageView.setImageURI(uri);
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if(resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 uri = result.getUri();
-            }
-            else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
