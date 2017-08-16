@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -370,10 +371,21 @@ public class Upload_Event extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Address address = addressList.get(0);
-                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+                if (addressList.size() != 0) {
+                    Address address = addressList.get(0);
+                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    map.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+                } else {
+                    AlertDialog.Builder myBuilder = new AlertDialog.Builder(Upload_Event.this);
+
+                    myBuilder.setTitle("Alert");
+                    myBuilder.setMessage("Location does not exist!");
+                    myBuilder.setCancelable(false);
+                    myBuilder.setPositiveButton("Ok", null);
+                    AlertDialog myDialog = myBuilder.create();
+                    myDialog.show();
+                }
             }
         }
     }
